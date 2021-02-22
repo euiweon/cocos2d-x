@@ -179,5 +179,5 @@ endif()
 
 if(EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
-    set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS "-s WASM=0 --use-preload-cache --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/src@/src --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/res@/res")
+    set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS "-s INITIAL_MEMORY=512MB -s WASM=0 --use-preload-cache --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/src@/src --preload-file ${CMAKE_CURRENT_SOURCE_DIR}/res@/res")
 endif()
