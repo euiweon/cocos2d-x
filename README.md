@@ -1,51 +1,31 @@
-To build HTML5 for cpp & lua project, on Linux:
+In order to build HTML5 for cocos2d-x cpp & lua project, first, install emsdk(https://emscripten.org/docs/getting_started/downloads.html)
+
+On Linux:
 
     # Install cocos2d-x with python2.7
     git clone https://github.com/WuJiayiSH/cocos2d-x.git
     python download-deps.py
     git submodule update --init
+    # export EMSDK_ROOT as environment variable
     ./setup.py
     source FILE_TO_SAVE_SYSTEM_VARIABLE
     cd ..
 
-    # Get the emsdk repo
-    git clone https://github.com/emscripten-core/emsdk.git
-    # Enter that directory
-    cd emsdk
-    # Download and install the latest SDK tools.
-    ./emsdk install latest
-    # Make the "latest" SDK "active" for the current user. (writes .emscripten file)
-    ./emsdk activate latest
-    # Activate PATH and other environment variables in the current terminal
-    source ./emsdk_env.sh
-    cd ..
-    
     # Compile and check build from emscripten-build/bin/MyGame
     cocos new MyGame -p com.your_company.mygame -l lua
     cd MyGame
     cocos compile -p emscripten -m release
 
-On Window, we use CMake to generate ninja project, make sure ninja(https://github.com/ninja-build/ninja) and CMake working in command line:
+On Window, we use CMake to generate ninja project, make sure ninja(https://github.com/ninja-build/ninja) and CMake works in command line:
 
     # Install cocos2d-x with python2.7
     git clone https://github.com/WuJiayiSH/cocos2d-x.git
     python download-deps.py
     git submodule update --init
+    # export EMSDK_ROOT as environment variable
     python setup.py
     cd ..
 
-    # Get the emsdk repo
-    git clone https://github.com/emscripten-core/emsdk.git
-    # Enter that directory
-    cd emsdk
-    # Download and install the latest SDK tools.
-    emsdk install latest
-    # Make the "latest" SDK "active" for the current user. (writes .emscripten file)
-    emsdk activate latest
-    # Activate PATH and other environment variables in the current terminal
-    emsdk_env
-    cd ..
-    
     # Compile and check build from emscripten-build/bin/MyGame
     cocos new MyGame -p com.your_company.mygame -l lua
     cd MyGame
