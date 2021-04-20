@@ -261,6 +261,10 @@ void LuaMinXmlHttpRequest::_sendRequest()
         
         long statusCode = response->getResponseCode();
         
+        // NOTE: comment the following code as it is not compatible with XMLHttpRequest on browsers
+        // _readyState must be set to DONE even requests error out.
+        // but this change might cause problem depends on the implementation of HttpClient
+        /*
         if (!response->isSucceed())
         {
             CCLOG("Response failed, error buffer: %s", response->getErrorBuffer());
@@ -282,6 +286,7 @@ void LuaMinXmlHttpRequest::_sendRequest()
             }
             return;
         }
+        */
         
         // set header
         std::vector<char> *headers = response->getResponseHeader();
@@ -294,20 +299,22 @@ void LuaMinXmlHttpRequest::_sendRequest()
         }
         
         /** get the response data **/
-        std::vector<char> *buffer = response->getResponseData();
-        
-        if (statusCode == 200)
+        if (statusCode == 0)
         {
-            //Succeeded
-            _status = 200;
-            _readyState = DONE;
-            _data.assign(buffer->begin(), buffer->end());
-            _dataSize = buffer->size();
-        }
-        else
+            _errorFlag = true;
+            _status    = 0;
+            _statusText.clear();
+        } else
         {
-            _status = 0;
+            _status = statusCode;
+            std::vector<char> *buffer = response->getResponseData();
+            if (buffer)
+            {
+                _data.assign(buffer->begin(), buffer->end());
+                _dataSize = buffer->size();
+            }
         }
+        _readyState = DONE; // _readyState must be set to DONE even requests error out.
         
         // TODO: call back lua function
         int handler = cocos2d::ScriptHandlerMgr::getInstance()->getObjectHandler((void*)this, cocos2d::ScriptHandlerMgr::HandlerType::XMLHTTPREQUEST_READY_STATE_CHANGE );
