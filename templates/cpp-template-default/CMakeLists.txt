@@ -161,5 +161,5 @@ endif()
 
 if(EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
-    set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS "-s INITIAL_MEMORY=512MB -s WASM=0 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/index.html")
+    set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS "-lidbfs.js -s INITIAL_MEMORY=512MB -s WASM=0 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/index.html")
 endif()

@@ -145,6 +145,19 @@
       };
     </script>
     <script async type="text/javascript" src="resource.js"></script>
+    <script type='text/javascript'>
+      Module.preRun.push(function() {
+        addRunDependency('sync_writable_path')
+        FS.mkdir('/cocos2dxWritablePath')
+        FS.mount(IDBFS, {}, '/cocos2dxWritablePath')
+        FS.syncfs(true, function (err) {
+          if (err) {
+            throw err
+          }
+          removeRunDependency('sync_writable_path')
+        })
+      })
+    </script>
     {{{ SCRIPT }}}
   </body>
 </html>

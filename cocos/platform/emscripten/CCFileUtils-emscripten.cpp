@@ -64,10 +64,7 @@ bool FileUtilsEmscripten::init()
 
 string FileUtilsEmscripten::getWritablePath() const
 {
-    char cwd[FILENAME_MAX] = {0};
-    getcwd(cwd, FILENAME_MAX - 1);
-    cwd[FILENAME_MAX-1] = '\0';
-    return cwd;
+    return "/cocos2dxWritablePath/";
 }
 
 bool FileUtilsEmscripten::isFileExistInternal(const std::string& strFilePath) const
