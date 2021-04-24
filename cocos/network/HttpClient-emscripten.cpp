@@ -41,8 +41,6 @@ namespace network
     {
         bool isAlone;
         HttpResponse *response;
-        std::vector<std::string> headerStrings;
-        std::vector<const char *> headerCStrings;
     };
 
     static HttpClient *_httpClient = nullptr; // pointer to singleton
@@ -256,21 +254,27 @@ namespace network
         userData->response = response;
 
         // set header
-        std::vector<std::string> headers = request->getHeaders();
-        for (auto &header : headers)
+        std::vector<std::string> headers;
+        for (auto &header : request->getHeaders())
         {
             size_t pos = header.find(":");
             if (pos != std::string::npos)
             {
                 std::string key = header.substr(0, pos);
                 std::string value = header.substr(pos + 1);
-                userData->headerStrings.push_back(key);
-                userData->headerStrings.push_back(value);
-                userData->headerCStrings.push_back(key.c_str());
-                userData->headerCStrings.push_back(value.c_str());
+                headers.push_back(key);
+                headers.push_back(value);
             }
         }
-        attr.requestHeaders = userData->headerCStrings.data();
+        
+        std::vector<const char*> headersCharptr;
+        headersCharptr.reserve(headers.size() + 1);
+        for (auto &header : headers)
+        {
+            headersCharptr.push_back(header.c_str());
+        }
+        headersCharptr.push_back(0);
+        attr.requestHeaders = &headersCharptr[0];
 
         // post data
         if (request->getRequestDataSize())
