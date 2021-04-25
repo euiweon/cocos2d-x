@@ -47,6 +47,11 @@ AudioEngineImpl::AudioEngineImpl()
 
 AudioEngineImpl::~AudioEngineImpl()
 {
+    while(Mix_Init(0))
+    {
+        Mix_Quit();
+    }
+    Mix_CloseAudio();
 }
 
 bool AudioEngineImpl::init()
@@ -55,6 +60,11 @@ bool AudioEngineImpl::init()
     mapSound.clear();
 
     g_AudioEngineImpl = this;
+    SDL_Init(SDL_INIT_AUDIO);
+    Mix_Init(MIX_INIT_MP3 | MIX_INIT_OGG);
+    int ret = Mix_OpenAudio(0, 0, 0, 0);
+    CC_ASSERT(ret == 0);
+    Mix_AllocateChannels(MAX_AUDIOINSTANCES);
     Mix_ChannelFinished(channelCallback);
     return true;
 }
@@ -112,15 +122,16 @@ bool AudioEngineImpl::resume(int audioID)
 {
     try {
         if (mapChannelInfo[audioID].channel < 0) {
-            float volume = mapChannelInfo[audioID].volume;
-            volume = volume > 1.0 ? 1.0 : volume;
-            volume = volume < 0.0 ? 0.0 : volume;
-            Mix_VolumeChunk(mapChannelInfo[audioID].sound, volume * MIX_MAX_VOLUME);
             int channel = Mix_PlayChannel(-1, mapChannelInfo[audioID].sound, mapChannelInfo[audioID].loop ? -1 : 0);
             if(channel < 0) {
                 return false;
             }
             mapChannelInfo[audioID].channel = channel;
+
+            float volume = mapChannelInfo[audioID].volume;
+            volume = volume > 1.0 ? 1.0 : volume;
+            volume = volume < 0.0 ? 0.0 : volume;
+            Mix_Volume(channel, volume * MIX_MAX_VOLUME);
         }else{
             Mix_Resume(mapChannelInfo[audioID].channel);
         }
