@@ -1,10 +1,10 @@
-In order to build HTML5 for cocos2d-x cpp & lua project, first, install emsdk(https://emscripten.org/docs/getting_started/downloads.html)
+In order to build cocos2d-x cpp & lua project into HTML5, make sure you have installed emsdk(https://emscripten.org/docs/getting_started/downloads.html) and cmake.
 
-On Linux:
+On Linux and Mac:
 
     # Install cocos2d-x with python2.7
     git clone https://github.com/WuJiayiSH/cocos2d-x.git
-    python download-deps.py
+    cd cocos2d-x && python download-deps.py
     git submodule update --init
     # export EMSDK_ROOT as environment variable
     ./setup.py
@@ -16,11 +16,11 @@ On Linux:
     cd MyGame
     cocos compile -p emscripten -m release
 
-On Window, we use CMake to generate ninja project, make sure ninja(https://github.com/ninja-build/ninja) and CMake works in command line:
+On Window, install ninja(https://github.com/ninja-build/ninja) and make sure it can be found from command line:
 
     # Install cocos2d-x with python2.7
     git clone https://github.com/WuJiayiSH/cocos2d-x.git
-    python download-deps.py
+    cd cocos2d-x && python download-deps.py
     git submodule update --init
     # export EMSDK_ROOT as environment variable
     python setup.py
@@ -39,13 +39,12 @@ TODO:
 1. Files under WritablePath will be lost between game sessions
 
 Backlogs:
-1. Building pipeline should work under Mac.
-2. Implement UIEditBox.cpp
-3. Implement WebSocket.cpp
-4. Investigate setAccelerometerEnabled, setAccelerometerInterval, getTextureDataForText in CCDevice
-5. Compile tiff, webp 
-6. Investigate getDuration, getCurrentTime, setCurrentTime in AudioEngine
-7. Response header in HttpResponse is missing
+1. Implement UIEditBox.cpp
+2. Implement WebSocket.cpp
+3. Investigate setAccelerometerEnabled, setAccelerometerInterval, getTextureDataForText in CCDevice
+4. Compile tiff, webp 
+5. Investigate getDuration, getCurrentTime, setCurrentTime in AudioEngine
+6. Response header in HttpResponse is missing
 
 <img src="http://www.cocos2d-x.org/attachments/801/cocos2dx_portrait.png" width=200>
 
