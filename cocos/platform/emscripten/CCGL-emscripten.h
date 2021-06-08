@@ -36,6 +36,11 @@ THE SOFTWARE.
 
 #define CC_GL_DEPTH24_STENCIL8      GL_DEPTH24_STENCIL8
 
+// emscripten is missing GL_ETC1_RGB8_OES but will need it for etc1 on Android WEBGL
+#ifndef GL_ETC1_RGB8_OES
+#define GL_ETC1_RGB8_OES 0x8D64
+#endif
+
 #endif // CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN
 
 #endif // __CCGL_H__
