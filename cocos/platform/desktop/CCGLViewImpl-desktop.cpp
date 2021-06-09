@@ -363,8 +363,10 @@ bool GLViewImpl::initWithRect(const std::string& viewName, Rect rect, float fram
 #endif
     initGlew();
 
-    // Enable point size by default.
+    // gl_PointSize is always available under WEBGL, but has to be enabled on desktop.
+#if CC_TARGET_PLATFORM != CC_PLATFORM_EMSCRIPTEN
     glEnable(GL_VERTEX_PROGRAM_POINT_SIZE);
+#endif
     
     if(_glContextAttrs.multisamplingCount > 0)
         glEnable(GL_MULTISAMPLE);
