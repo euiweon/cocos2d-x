@@ -44,6 +44,7 @@ Configuration::Configuration()
 , _maxModelviewStackDepth(0)
 , _supportsPVRTC(false)
 , _supportsETC1(false)
+, _supportsETC2(false)
 , _supportsS3TC(false)
 , _supportsATITC(false)
 , _supportsNPOT(false)
@@ -136,6 +137,13 @@ void Configuration::gatherGPUInfo()
     _supportsETC1 = checkForGLExtension("GL_OES_compressed_ETC1_RGB8_texture");
 #endif
     _valueDict["gl.supports_ETC1"] = Value(_supportsETC1);
+
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
+    _supportsETC2 = checkForGLExtension("WEBGL_compressed_texture_etc");
+#else
+    _supportsETC2 = checkForETC2();
+#endif
+    _valueDict["gl.supports_ETC2"] = Value(_supportsETC2);
     
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
     _supportsS3TC = checkForGLExtension("WEBGL_compressed_texture_s3tc");
@@ -222,6 +230,25 @@ bool Configuration::checkForGLExtension(const std::string &searchName) const
    return  (_glExtensions && strstr(_glExtensions, searchName.c_str() ) ) ? true : false;
 }
 
+
+bool Configuration::checkForETC2() const
+{
+    GLint numFormats = 0;
+    glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &numFormats);
+    GLint* formats = new GLint[numFormats];
+    glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats);
+
+    int supportNum = 0;
+    for (GLint i = 0; i < numFormats; ++i)
+    {
+        if (formats[i] == GL_COMPRESSED_RGB8_ETC2 || formats[i] == GL_COMPRESSED_RGBA8_ETC2_EAC)
+        supportNum++;
+    }
+    delete [] formats;
+
+    return supportNum >= 2;
+}
+
 //
 // getters for specific variables.
 // Maintained for backward compatibility reasons only.
@@ -253,12 +280,22 @@ bool Configuration::supportsPVRTC() const
 
 bool Configuration::supportsETC() const
 {
+    return supportsETC1();
+}
+
+bool Configuration::supportsETC1() const
+{
     //GL_ETC1_RGB8_OES is not defined in old opengl version
 #ifdef GL_ETC1_RGB8_OES
     return _supportsETC1;
 #else
     return false;
 #endif
+}
+
+bool Configuration::supportsETC2() const
+{
+    return _supportsETC2;
 }
 
 bool Configuration::supportsS3TC() const

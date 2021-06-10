@@ -80,8 +80,17 @@ namespace {
         
 #ifdef GL_ETC1_RGB8_OES
         PixelFormatInfoMapValue(Texture2D::PixelFormat::ETC, Texture2D::PixelFormatInfo(GL_ETC1_RGB8_OES, 0xFFFFFFFF, 0xFFFFFFFF, 4, true, false)),
+        PixelFormatInfoMapValue(Texture2D::PixelFormat::ETC1, Texture2D::PixelFormatInfo(GL_ETC1_RGB8_OES, 0xFFFFFFFF, 0xFFFFFFFF, 4, true, false)),
+#endif
+
+#ifdef GL_COMPRESSED_RGB8_ETC2
+        PixelFormatInfoMapValue(Texture2D::PixelFormat::ETC2_RGB, Texture2D::PixelFormatInfo(GL_COMPRESSED_RGB8_ETC2, 0xFFFFFFFF, 0xFFFFFFFF, 4, true, false)),
 #endif
         
+#ifdef GL_COMPRESSED_RGBA8_ETC2_EAC
+        PixelFormatInfoMapValue(Texture2D::PixelFormat::ETC2_RGBA, Texture2D::PixelFormatInfo(GL_COMPRESSED_RGBA8_ETC2_EAC, 0xFFFFFFFF, 0xFFFFFFFF, 8, true, true)),
+#endif
+
 #ifdef GL_COMPRESSED_RGBA_S3TC_DXT1_EXT
         PixelFormatInfoMapValue(Texture2D::PixelFormat::S3TC_DXT1, Texture2D::PixelFormatInfo(GL_COMPRESSED_RGBA_S3TC_DXT1_EXT, 0xFFFFFFFF, 0xFFFFFFFF, 4, true, false)),
 #endif
@@ -587,7 +596,8 @@ bool Texture2D::initWithMipmaps(MipmapInfo* mipmaps, int mipmapsNum, PixelFormat
     const PixelFormatInfo& info = formatItr->second;
 
     if (info.compressed && !Configuration::getInstance()->supportsPVRTC()
-                        && !Configuration::getInstance()->supportsETC()
+                        && !Configuration::getInstance()->supportsETC1()
+                        && !Configuration::getInstance()->supportsETC2()
                         && !Configuration::getInstance()->supportsS3TC()
                         && !Configuration::getInstance()->supportsATITC())
     {
@@ -1362,6 +1372,15 @@ const char* Texture2D::getStringForFormat() const
             
         case Texture2D::PixelFormat::ETC:
             return "ETC";
+
+        case Texture2D::PixelFormat::ETC1:
+            return "ETC1";
+
+        case Texture2D::PixelFormat::ETC2_RGB:
+            return "ETC2_RGB";
+
+        case Texture2D::PixelFormat::ETC2_RGBA:
+            return "ETC2_RGBA";
 
         case Texture2D::PixelFormat::S3TC_DXT1:
             return "S3TC_DXT1";

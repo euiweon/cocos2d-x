@@ -87,6 +87,7 @@ extern "C"
 #endif //CC_USE_TIFF
 
 #include "base/etc1.h"
+#include "base/etc2.h"
     
 #if CC_USE_JPEG
 #include "jpeglib.h"
@@ -584,6 +585,12 @@ bool Image::initWithImageData(const unsigned char * data, ssize_t dataLen)
         case Format::ETC:
             ret = initWithETCData(unpackedData, unpackedLen);
             break;
+        case Format::ETC1:
+            ret = initWithETC1Data(unpackedData, unpackedLen);
+            break;
+        case Format::ETC2:
+            ret = initWithETC2Data(unpackedData, unpackedLen);
+            break;
         case Format::S3TC:
             ret = initWithS3TCData(unpackedData, unpackedLen);
             break;
@@ -636,6 +643,15 @@ bool Image::isEtc(const unsigned char * data, ssize_t /*dataLen*/)
     return etc1_pkm_is_valid((etc1_byte*)data) ? true : false;
 }
 
+bool Image::isEtc1(const unsigned char * data, ssize_t /*dataLen*/)
+{
+    return etc1_pkm_is_valid((etc1_byte*)data) ? true : false;
+}
+
+bool Image::isEtc2(const unsigned char * data, ssize_t /*dataLen*/)
+{
+    return etc2_pkm_is_valid((etc2_byte*)data) ? true : false;
+}
 
 bool Image::isS3TC(const unsigned char * data, ssize_t /*dataLen*/)
 {
@@ -735,9 +751,13 @@ Image::Format Image::detectFormat(const unsigned char * data, ssize_t dataLen)
     {
         return Format::PVR;
     }
-    else if (isEtc(data, dataLen))
+    else if (isEtc1(data, dataLen))
     {
-        return Format::ETC;
+        return Format::ETC1;
+    }
+    else if (isEtc2(data, dataLen))
+    {
+        return Format::ETC2;
     }
     else if (isS3TC(data, dataLen))
     {
@@ -1718,6 +1738,11 @@ bool Image::initWithPVRv3Data(const unsigned char * data, ssize_t dataLen)
 
 bool Image::initWithETCData(const unsigned char * data, ssize_t dataLen)
 {
+    return initWithETC1Data(data, dataLen);
+}
+
+bool Image::initWithETC1Data(const unsigned char * data, ssize_t dataLen)
+{
     const etc1_byte* header = static_cast<const etc1_byte*>(data);
     
     //check the data
@@ -1769,6 +1794,65 @@ bool Image::initWithETCData(const unsigned char * data, ssize_t dataLen)
             return false;
         }
         
+        return true;
+    }
+    return false;
+}
+
+
+bool Image::initWithETC2Data(const unsigned char * data, ssize_t dataLen)
+{
+    const etc2_byte* header = static_cast<const etc2_byte*>(data);
+    
+    //check the data
+    if (! etc2_pkm_is_valid(header))
+    {
+        return  false;
+    }
+
+    _width = etc2_pkm_get_width(header);
+    _height = etc2_pkm_get_height(header);
+
+    if (0 == _width || 0 == _height)
+    {
+        return false;
+    }
+
+    etc2_uint32 format = etc2_pkm_get_format(header);
+
+    // We only support ETC2_RGBA_NO_MIPMAPS and ETC2_RGB_NO_MIPMAPS
+    assert(format == ETC2_RGBA_NO_MIPMAPS || format == ETC2_RGB_NO_MIPMAPS);
+
+    if (Configuration::getInstance()->supportsETC2())
+    {
+        _renderFormat = format == ETC2_RGBA_NO_MIPMAPS ? Texture2D::PixelFormat::ETC2_RGBA : Texture2D::PixelFormat::ETC2_RGB;
+        _dataLen = dataLen - ETC2_PKM_HEADER_SIZE;
+        _data = static_cast<unsigned char*>(malloc(_dataLen * sizeof(unsigned char)));
+        memcpy(_data, static_cast<const unsigned char*>(data) + ETC2_PKM_HEADER_SIZE, _dataLen);
+        return true;
+    }
+    else
+    {
+        CCLOG("cocos2d: Hardware ETC2 decoder not present. Using software decoder");
+
+        // if device do not support ETC2, decode texture by software
+        // etc2_decode_image always decode to RGBA8888
+        int bytePerPixel = 4;
+        _renderFormat = Texture2D::PixelFormat::RGBA8888;
+        
+        _dataLen =  _width * _height * bytePerPixel;
+        _data = static_cast<unsigned char*>(malloc(_dataLen * sizeof(unsigned char)));
+        
+        if (etc2_decode_image(format, static_cast<const unsigned char*>(data) + ETC2_PKM_HEADER_SIZE, static_cast<etc2_byte*>(_data), _width, _height) != 0)
+        {
+            _dataLen = 0;
+            if (_data != nullptr)
+            {
+                free(_data);
+            }
+            return false;
+        }
+
         return true;
     }
     return false;

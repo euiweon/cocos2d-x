@@ -110,10 +110,22 @@ public:
     
     /** Whether or not ETC Texture Compressed is supported.
      * 
-     *
+     * @deprecated Please use 'supportsETC1' instead.
      * @return Is true if supports ETC Texture Compressed.
      */
     bool supportsETC() const;
+
+    /** Whether or not ETC1 Texture Compressed is supported.
+     * 
+     * @return Is true if supports ETC1 Texture Compressed.
+     */
+    bool supportsETC1() const;
+
+    /** Whether or not ETC2 Texture Compressed is supported.
+     * 
+     * @return Is true if supports ETC2 Texture Compressed.
+     */
+    bool supportsETC2() const;
     
     /** Whether or not S3TC Texture Compressed is supported.
      *
@@ -256,11 +268,16 @@ private:
     static Configuration    *s_sharedConfiguration;
 	static std::string		s_configfile;
     
+    /**
+     * Check whether or not ETC2 Texture Compressed is supported.
+     */
+    bool checkForETC2() const;
 protected:
     GLint           _maxTextureSize;
     GLint           _maxModelviewStackDepth;
     bool            _supportsPVRTC;
     bool            _supportsETC1;
+    bool            _supportsETC2;
     bool            _supportsS3TC;
     bool            _supportsATITC;
     bool            _supportsNPOT;

@@ -95,6 +95,10 @@ public:
         ATITC,
         //! TGA
         TGA,
+        //! ETC1
+        ETC1,
+        //! ETC2
+        ETC2,
         //! Raw Data
         RAW_DATA,
         //! Unknown format
@@ -175,7 +179,12 @@ protected:
     bool initWithPVRData(const unsigned char * data, ssize_t dataLen);
     bool initWithPVRv2Data(const unsigned char * data, ssize_t dataLen);
     bool initWithPVRv3Data(const unsigned char * data, ssize_t dataLen);
+    /*
+     @deprecated Please use 'initWithETC1Data' instead.
+     */
     bool initWithETCData(const unsigned char * data, ssize_t dataLen);
+    bool initWithETC1Data(const unsigned char * data, ssize_t dataLen);
+    bool initWithETC2Data(const unsigned char * data, ssize_t dataLen);
     bool initWithS3TCData(const unsigned char * data, ssize_t dataLen);
     bool initWithATITCData(const unsigned char *data, ssize_t dataLen);
     typedef struct sImageTGA tImageTGA;
@@ -228,7 +237,12 @@ protected:
     bool isTiff(const unsigned char * data, ssize_t dataLen);
     bool isWebp(const unsigned char * data, ssize_t dataLen);
     bool isPvr(const unsigned char * data, ssize_t dataLen);
+    /*
+     @deprecated Please use 'isEtc1' instead.
+     */
     bool isEtc(const unsigned char * data, ssize_t dataLen);
+    bool isEtc1(const unsigned char* data, ssize_t dataLen);
+    bool isEtc2(const unsigned char* data, ssize_t dataLen);
     bool isS3TC(const unsigned char * data,ssize_t dataLen);
     bool isATITC(const unsigned char *data, ssize_t dataLen);
 };
