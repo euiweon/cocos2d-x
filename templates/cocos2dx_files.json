@@ -1170,6 +1170,8 @@
         "cocos/platform/emscripten/CCDevice-emscripten.cpp", 
         "cocos/platform/emscripten/CCFileUtils-emscripten.cpp", 
         "cocos/platform/emscripten/CCFileUtils-emscripten.h", 
+        "cocos/platform/emscripten/devtools-emscripten.cpp", 
+        "cocos/platform/emscripten/devtools-emscripten.h", 
         "cocos/precheader.cpp", 
         "cocos/precheader.h", 
         "cocos/renderer/CCBatchCommand.cpp", 
