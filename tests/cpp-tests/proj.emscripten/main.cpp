@@ -22,22 +22,18 @@
  THE SOFTWARE.
  ****************************************************************************/
 
-#include "ExtensionsTest.h"
-#include "../testResource.h"
-#include "AssetsManagerExTest/AssetsManagerExTest.h"
-#include "NetworkTest/HttpClientTest.h"
-#include "TableViewTest/TableViewTestScene.h"
+#include "../Classes/AppDelegate.h"
 
-#include "NetworkTest/WebSocketTest.h"
-#include "NetworkTest/SocketIOTest.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <string>
 
-ExtensionsTests::ExtensionsTests()
+USING_NS_CC;
+
+int main(int argc, char **argv)
 {
-    addTest("AssetsManagerExTest", [](){ return new (std::nothrow) AssetsManagerExTests; });
-    addTest("HttpClientTest", [](){ return new (std::nothrow) HttpClientTests; });
-#if (CC_TARGET_PLATFORM != CC_PLATFORM_EMSCRIPTEN)
-    addTest("WebSocketTest", [](){ return new (std::nothrow) WebSocketTests; });
-    addTest("SocketIOTest", [](){ return new (std::nothrow) SocketIOTests; });
-#endif
-    addTest("TableViewTest", [](){ return new (std::nothrow) TableViewTests; });
+    // create the application instance
+    AppDelegate app;
+    return Application::getInstance()->run();
 }

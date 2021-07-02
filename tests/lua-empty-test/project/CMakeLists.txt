@@ -4,6 +4,11 @@ set(APP_NAME lua-empty-test)
 
 project(${APP_NAME})
 
+if(EMSCRIPTEN)
+    set(CMAKE_C_FLAGS  "-s FORCE_FILESYSTEM=1 -s FETCH=1 -s USE_GLFW=3 -s VERBOSE=1 -s USE_LIBJPEG=1 -s USE_LIBPNG=1 -s USE_ZLIB=1 -s USE_FREETYPE=1")
+    set(CMAKE_CXX_FLAGS  "-s FORCE_FILESYSTEM=1 -s FETCH=1 -s USE_GLFW=3 -s VERBOSE=1 -s USE_LIBJPEG=1 -s USE_LIBPNG=1 -s USE_ZLIB=1 -s USE_FREETYPE=1")
+endif()
+
 if(NOT DEFINED BUILD_ENGINE_DONE)
     set(COCOS2DX_ROOT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
     set(CMAKE_MODULE_PATH ${COCOS2DX_ROOT_PATH}/cmake/Modules/)
@@ -78,6 +83,8 @@ elseif(APPLE)
              )
     endif()
     list(APPEND GAME_SOURCE ${cc_common_res})
+elseif(EMSCRIPTEN)
+    list(APPEND GAME_SOURCE proj.emscripten/main.cpp)
 endif()
 
 set(APP_SRC ${GAME_HEADER} ${GAME_SOURCE})
@@ -119,4 +126,23 @@ if(LINUX OR WINDOWS)
     cocos_copy_target_res(${APP_NAME} COPY_TO ${APP_RES_DIR}/res FOLDERS ${res_res_folders})
     cocos_copy_target_res(${APP_NAME} COPY_TO ${APP_RES_DIR}/src FOLDERS ${res_src_folders})
     cocos_copy_target_res(${APP_NAME} COPY_TO ${APP_RES_DIR}/src/cocos FOLDERS ${res_script_folders})
+endif()
+
+if(EMSCRIPTEN)
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+    set(EMSCRIPTEN_LINK_FLAGS "-lidbfs.js -s INITIAL_MEMORY=512MB -s WASM=0 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/index.html --use-preload-cache")
+    
+    foreach(res_res_folder IN LISTS res_res_folders)
+        string(APPEND EMSCRIPTEN_LINK_FLAGS " --preload-file ${res_res_folder}/@/res")
+    endforeach()
+
+    foreach(res_src_folder IN LISTS res_src_folders)
+        string(APPEND EMSCRIPTEN_LINK_FLAGS " --preload-file ${res_src_folder}/@/src")
+    endforeach()
+
+    foreach(res_script_folder IN LISTS res_script_folders)
+        string(APPEND EMSCRIPTEN_LINK_FLAGS " --preload-file ${res_script_folder}/@/src/cocos")
+    endforeach()
+    
+    set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS}")
 endif()

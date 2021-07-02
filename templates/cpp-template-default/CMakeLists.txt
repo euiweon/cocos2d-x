@@ -161,5 +161,11 @@ endif()
 
 if(EMSCRIPTEN)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
-    set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS "-lidbfs.js -s INITIAL_MEMORY=512MB -s WASM=0 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/index.html")
+    set(EMSCRIPTEN_LINK_FLAGS "-lidbfs.js -s INITIAL_MEMORY=512MB -s WASM=0 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/index.html --use-preload-cache")
+    
+    foreach(FOLDER IN LISTS GAME_RES_FOLDER)
+        string(APPEND EMSCRIPTEN_LINK_FLAGS " --preload-file ${FOLDER}/@/")
+    endforeach()
+    
+    set_target_properties(${APP_NAME} PROPERTIES LINK_FLAGS "${EMSCRIPTEN_LINK_FLAGS}")
 endif()
