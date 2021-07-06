@@ -46,6 +46,8 @@ Backlogs:
 5. Investigate getDuration, getCurrentTime, setCurrentTime in AudioEngine
 6. Response header in HttpResponse is missing
 
+You might also be able to build WASM, starts with removing "-s WASM=0" from CMakeLists.txt in your project root for fun.
+
 <img src="http://www.cocos2d-x.org/attachments/801/cocos2dx_portrait.png" width=200>
 
 
