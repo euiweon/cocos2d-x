@@ -85,7 +85,7 @@ namespace cocos2d { namespace network {
             }
             attr.onprogress = DownloaderEmscripten::onProgress;
             attr.onerror = DownloaderEmscripten::onError;
-            attr.timeoutMSecs = this->hints.timeoutInSeconds;
+            attr.timeoutMSecs = this->hints.timeoutInSeconds * 1000;
             emscripten_fetch_t *fetch = emscripten_fetch(&attr, task->requestURL.c_str());
             fetch->userData = this;
 
