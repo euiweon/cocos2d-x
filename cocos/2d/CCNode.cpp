@@ -705,7 +705,7 @@ void Node::setName(const std::string& name)
     std::hash<std::string> h;
     _hashOfName = h(name);
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN) && (COCOS2D_DEBUG >= 1)
     DevToolsImpl::getInstance()->nodeNameChanged(this);
 #endif
 }
@@ -1323,7 +1323,7 @@ void Node::onEnter()
         ++__attachedNodeCount;
     }
     
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN) && (COCOS2D_DEBUG >= 1)
     DevToolsImpl::getInstance()->nodeEntered(this);
 #endif
     
@@ -1416,7 +1416,7 @@ void Node::onExit()
         --__attachedNodeCount;
     }
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN) && (COCOS2D_DEBUG >= 1)
     DevToolsImpl::getInstance()->nodeExited(this);
 #endif
 

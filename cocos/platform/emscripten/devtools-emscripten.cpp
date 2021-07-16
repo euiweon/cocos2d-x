@@ -78,29 +78,23 @@ void DevToolsImpl::resume()
 
 void DevToolsImpl::nodeEntered(const Node* node)
 {
-#if COCOS2D_DEBUG >= 1
     EM_ASM({
         Module.cocosNodeEntered($0, $1, UTF8ToString($2), UTF8ToString($3));
     }, node, node->getParent(), node->getName().c_str(), node->getDescription().c_str());
-#endif
 }
 
 void DevToolsImpl::nodeExited(const Node* node)
 {
-#if COCOS2D_DEBUG >= 1
     EM_ASM({
         Module.cocosNodeExited($0);
     }, node);
-#endif
 }
 
 void DevToolsImpl::nodeNameChanged(const Node* node)
 {
-#if COCOS2D_DEBUG >= 1
     EM_ASM({
         Module.cocosNodeNameChanged($0, UTF8ToString($1), UTF8ToString($2));
     }, node, node->getName().c_str(), node->getDescription().c_str());
-#endif
 }
 
 DevToolsImpl* DevToolsImpl::getInstance()
