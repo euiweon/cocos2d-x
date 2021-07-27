@@ -2,6 +2,7 @@
 #include "cocos-ext.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_extension_Control_setEnabled(lua_State* tolua_S)
 {
@@ -11408,18 +11409,50 @@ int lua_cocos2dx_extension_AssetsManager_create(lua_State* tolua_S)
         std::string arg1_tmp; ok &= luaval_to_std_string(tolua_S, 3, &arg1_tmp, "cc.AssetsManager:create"); arg1 = arg1_tmp.c_str();
         std::string arg2_tmp; ok &= luaval_to_std_string(tolua_S, 4, &arg2_tmp, "cc.AssetsManager:create"); arg2 = arg2_tmp.c_str();
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](int larg0) -> void {
+		            tolua_pushnumber(tolua_S,(lua_Number)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 6, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 6, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](int larg0) -> void {
+		            tolua_pushnumber(tolua_S,(lua_Number)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg4 = lambda;
 		} while(0)
 		;
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 7, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 7, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg5 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -12747,8 +12780,25 @@ int lua_cocos2dx_extension_AssetsManagerEx_setVerifyCallback(lua_State* tolua_S)
         std::function<bool (const std::string&, cocos2d::extension::ManifestAsset)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](const std::string& larg0, cocos2d::extension::Manifest::Asset larg1) -> bool {
+		            lua_pushlstring(tolua_S,larg0.c_str(),larg0.length());
+		            #pragma warning NO CONVERSION FROM NATIVE FOR ManifestAsset;
+		            bool ret;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunction(func->getLuaFunction(), 2, 1, [&ret](lua_State* _state, int numResults) -> void {
+		                ret = lua_toboolean(_state, -1);
+		                lua_pop(_state, 1); 
+		            });
+		            return ret;
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -12895,8 +12945,25 @@ int lua_cocos2dx_extension_AssetsManagerEx_setVersionCompareHandle(lua_State* to
         std::function<int (const std::string&, const std::string&)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](const std::string& larg0, const std::string& larg1) -> int {
+		            lua_pushlstring(tolua_S,larg0.c_str(),larg0.length());
+		            lua_pushlstring(tolua_S,larg1.c_str(),larg1.length());
+		            int ret;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunction(func->getLuaFunction(), 2, 1, [&ret](lua_State* _state, int numResults) -> void {
+		                ret = lua_tonumber(_state, -1);
+		                lua_pop(_state, 1);
+		            });
+		            return ret;
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -13256,8 +13323,19 @@ int lua_cocos2dx_extension_EventListenerAssetsManagerEx_init(lua_State* tolua_S)
         ok &= luaval_to_object<const cocos2d::extension::AssetsManagerEx>(tolua_S, 2, "cc.AssetsManagerEx",&arg0, "cc.EventListenerAssetsManagerEx:init");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::extension::EventAssetsManagerEx* larg0) -> void {
+		            object_to_luaval<cocos2d::extension::EventAssetsManagerEx>(tolua_S, "cc.EventAssetsManagerEx",(cocos2d::extension::EventAssetsManagerEx*)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)

@@ -3402,3 +3402,14 @@ void node_to_luaval(lua_State* L, const char* type, cocos2d::Node* node)
 {
     object_to_luaval<cocos2d::Node>(L, type, node);
 }
+
+LuaFunctionWrapper::LuaFunctionWrapper(lua_State* L, LUA_FUNCTION handler): 
+_state(L),
+_handler(handler)
+{
+}
+
+LuaFunctionWrapper::~LuaFunctionWrapper()
+{
+    toluafix_remove_function_by_refid(_state, _handler);
+}

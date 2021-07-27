@@ -3,6 +3,7 @@
 #include "3d/CCBundle3D.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_3d_Animation3D_initWithFile(lua_State* tolua_S)
 {

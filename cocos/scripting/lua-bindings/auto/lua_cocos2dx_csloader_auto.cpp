@@ -2,6 +2,7 @@
 #include "editor-support/cocostudio/ActionTimeline/CSLoader.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_csloader_CSLoader_createNodeFromJson(lua_State* tolua_S)
 {
@@ -610,8 +611,19 @@ int lua_cocos2dx_csloader_CSLoader_createNodeWithVisibleSize(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (cocos2d::Ref *)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
             if (!ok) { break; }

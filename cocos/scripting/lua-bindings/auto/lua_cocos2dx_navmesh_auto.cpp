@@ -4,6 +4,7 @@
 #include "scripting/lua-bindings/manual/navmesh/lua_cocos2dx_navmesh_conversions.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_navmesh_NavMeshAgent_setMaxSpeed(lua_State* tolua_S)
 {

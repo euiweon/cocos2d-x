@@ -5,6 +5,7 @@
 #include "scripting/lua-bindings/manual/CCComponentLua.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_Ref_release(lua_State* tolua_S)
 {
@@ -4438,8 +4439,18 @@ int lua_cocos2dx_Node_setOnExitCallback(lua_State* tolua_S)
         std::function<void ()> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -5083,8 +5094,18 @@ int lua_cocos2dx_Node_setonEnterTransitionDidFinishCallback(lua_State* tolua_S)
         std::function<void ()> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -5800,8 +5821,18 @@ int lua_cocos2dx_Node_setOnEnterCallback(lua_State* tolua_S)
         std::function<void ()> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -5954,8 +5985,18 @@ int lua_cocos2dx_Node_setonExitTransitionDidStartCallback(lua_State* tolua_S)
         std::function<void ()> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -17997,8 +18038,18 @@ int lua_cocos2dx_AsyncTaskPool_enqueue(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void ()> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -18017,8 +18068,19 @@ int lua_cocos2dx_AsyncTaskPool_enqueue(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (void *)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](void* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR void*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -18030,8 +18092,18 @@ int lua_cocos2dx_AsyncTaskPool_enqueue(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void ()> arg3;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
 
@@ -30622,8 +30694,19 @@ int lua_cocos2dx_ActionFloat_initWithDuration(lua_State* tolua_S)
         ok &= luaval_to_number(tolua_S, 4,&arg2, "cc.ActionFloat:initWithDuration");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](float larg0) -> void {
+		            tolua_pushnumber(tolua_S,(lua_Number)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -30670,8 +30753,19 @@ int lua_cocos2dx_ActionFloat_create(lua_State* tolua_S)
         ok &= luaval_to_number(tolua_S, 3,&arg1, "cc.ActionFloat:create");
         ok &= luaval_to_number(tolua_S, 4,&arg2, "cc.ActionFloat:create");
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](float larg0) -> void {
+		            tolua_pushnumber(tolua_S,(lua_Number)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -33154,8 +33248,19 @@ int lua_cocos2dx_FileUtils_getStringFromFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (std::string)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](std::string larg0) -> void {
+		            lua_pushlstring(tolua_S,larg0.c_str(),larg0.length());
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -33267,8 +33372,19 @@ int lua_cocos2dx_FileUtils_removeFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -33335,8 +33451,19 @@ int lua_cocos2dx_FileUtils_listFilesRecursivelyAsync(lua_State* tolua_S)
         ok &= luaval_to_std_string(tolua_S, 2,&arg0, "cc.FileUtils:listFilesRecursivelyAsync");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](std::vector<std::string> larg0) -> void {
+		            ccvector_std_string_to_luaval(tolua_S, larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -33445,8 +33572,19 @@ int lua_cocos2dx_FileUtils_renameFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg3;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
 
@@ -33505,8 +33643,19 @@ int lua_cocos2dx_FileUtils_renameFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg2;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 4, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 4, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg2 = lambda;
 		} while(0)
 		;
 
@@ -34047,8 +34196,19 @@ int lua_cocos2dx_FileUtils_getFileSize(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (long)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](long larg0) -> void {
+		            tolua_pushnumber(tolua_S,(lua_Number)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -34163,8 +34323,19 @@ int lua_cocos2dx_FileUtils_removeDirectory(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -34280,8 +34451,19 @@ int lua_cocos2dx_FileUtils_writeStringToFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg2;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 4, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 4, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg2 = lambda;
 		} while(0)
 		;
 
@@ -34535,8 +34717,19 @@ int lua_cocos2dx_FileUtils_writeValueVectorToFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg2;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 4, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 4, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg2 = lambda;
 		} while(0)
 		;
 
@@ -34602,8 +34795,19 @@ int lua_cocos2dx_FileUtils_isFileExist(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -34819,8 +35023,19 @@ int lua_cocos2dx_FileUtils_writeValueMapToFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg2;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 4, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 4, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg2 = lambda;
 		} while(0)
 		;
 
@@ -35036,8 +35251,19 @@ int lua_cocos2dx_FileUtils_isDirectoryExist(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -35196,8 +35422,19 @@ int lua_cocos2dx_FileUtils_createDirectory(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (bool)> arg1;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](bool larg0) -> void {
+		            tolua_pushboolean(tolua_S,(bool)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
 
@@ -35264,8 +35501,19 @@ int lua_cocos2dx_FileUtils_listFilesAsync(lua_State* tolua_S)
         ok &= luaval_to_std_string(tolua_S, 2,&arg0, "cc.FileUtils:listFilesAsync");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](std::vector<std::string> larg0) -> void {
+		            ccvector_std_string_to_luaval(tolua_S, larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -36846,8 +37094,20 @@ int lua_cocos2dx_EventListenerAcceleration_init(lua_State* tolua_S)
         std::function<void (cocos2d::Acceleration *, cocos2d::Event *)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Acceleration* larg0, cocos2d::Event* larg1) -> void {
+		            object_to_luaval<cocos2d::Acceleration>(tolua_S, "cc.Acceleration",(cocos2d::Acceleration*)larg0);
+		            object_to_luaval<cocos2d::Event>(tolua_S, "cc.Event",(cocos2d::Event*)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -62314,8 +62574,19 @@ int lua_cocos2dx_MenuItemLabel_initWithLabel(lua_State* tolua_S)
         ok &= luaval_to_object<cocos2d::Node>(tolua_S, 2, "cc.Node",&arg0, "cc.MenuItemLabel:initWithLabel");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -62544,8 +62815,19 @@ int lua_cocos2dx_MenuItemAtlasFont_initWithString(lua_State* tolua_S)
         ok &= luaval_to_int32(tolua_S, 6,&arg4, "cc.MenuItemAtlasFont:initWithString");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 7, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 7, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg5 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -62756,8 +63038,19 @@ int lua_cocos2dx_MenuItemFont_initWithString(lua_State* tolua_S)
         ok &= luaval_to_std_string(tolua_S, 2,&arg0, "cc.MenuItemFont:initWithString");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -63319,8 +63612,19 @@ int lua_cocos2dx_MenuItemSprite_initWithNormalSprite(lua_State* tolua_S)
         ok &= luaval_to_object<cocos2d::Node>(tolua_S, 4, "cc.Node",&arg2, "cc.MenuItemSprite:initWithNormalSprite");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -63884,8 +64188,19 @@ int lua_cocos2dx_MenuItemImage_initWithNormalImage(lua_State* tolua_S)
         ok &= luaval_to_std_string(tolua_S, 4,&arg2, "cc.MenuItemImage:initWithNormalImage");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -79031,8 +79346,20 @@ int lua_cocos2dx_RenderTexture_saveToFileAsNonPMA(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (cocos2d::RenderTexture *, const std::string&)> arg3;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::RenderTexture* larg0, const std::string& larg1) -> void {
+		            object_to_luaval<cocos2d::RenderTexture>(tolua_S, "cc.RenderTexture",(cocos2d::RenderTexture*)larg0);
+		            lua_pushlstring(tolua_S,larg1.c_str(),larg1.length());
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
 
@@ -79083,8 +79410,20 @@ int lua_cocos2dx_RenderTexture_saveToFileAsNonPMA(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (cocos2d::RenderTexture *, const std::string&)> arg2;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 4, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 4, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::RenderTexture* larg0, const std::string& larg1) -> void {
+		            object_to_luaval<cocos2d::RenderTexture>(tolua_S, "cc.RenderTexture",(cocos2d::RenderTexture*)larg0);
+		            lua_pushlstring(tolua_S,larg1.c_str(),larg1.length());
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg2 = lambda;
 		} while(0)
 		;
 
@@ -79325,8 +79664,20 @@ int lua_cocos2dx_RenderTexture_saveToFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (cocos2d::RenderTexture *, const std::string&)> arg3;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 5, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 5, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::RenderTexture* larg0, const std::string& larg1) -> void {
+		            object_to_luaval<cocos2d::RenderTexture>(tolua_S, "cc.RenderTexture",(cocos2d::RenderTexture*)larg0);
+		            lua_pushlstring(tolua_S,larg1.c_str(),larg1.length());
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg3 = lambda;
 		} while(0)
 		;
 
@@ -79377,8 +79728,20 @@ int lua_cocos2dx_RenderTexture_saveToFile(lua_State* tolua_S)
             if (!ok) { break; }
             std::function<void (cocos2d::RenderTexture *, const std::string&)> arg2;
             do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 4, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 4, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::RenderTexture* larg0, const std::string& larg1) -> void {
+		            object_to_luaval<cocos2d::RenderTexture>(tolua_S, "cc.RenderTexture",(cocos2d::RenderTexture*)larg0);
+		            lua_pushlstring(tolua_S,larg1.c_str(),larg1.length());
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg2 = lambda;
 		} while(0)
 		;
 

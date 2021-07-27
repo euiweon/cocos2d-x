@@ -3,6 +3,7 @@
 #include "2d/CCFastTMXTiledMap.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_experimental_TMXLayer_getPositionAt(lua_State* tolua_S)
 {

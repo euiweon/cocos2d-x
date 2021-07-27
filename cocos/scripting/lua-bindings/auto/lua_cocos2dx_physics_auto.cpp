@@ -3,6 +3,7 @@
 #include "cocos2d.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_physics_PhysicsShape_getFriction(lua_State* tolua_S)
 {
@@ -11814,8 +11815,18 @@ int lua_cocos2dx_physics_PhysicsWorld_setPreUpdateCallback(lua_State* tolua_S)
         std::function<void ()> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -11915,8 +11926,18 @@ int lua_cocos2dx_physics_PhysicsWorld_setPostUpdateCallback(lua_State* tolua_S)
         std::function<void ()> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func]() -> void {
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 0);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)

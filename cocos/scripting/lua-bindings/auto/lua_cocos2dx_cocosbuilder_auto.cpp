@@ -2,6 +2,7 @@
 #include "editor-support/cocosbuilder/CocosBuilder.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_cocosbuilder_CCBAnimationManager_moveAnimationsFromNode(lua_State* tolua_S)
 {

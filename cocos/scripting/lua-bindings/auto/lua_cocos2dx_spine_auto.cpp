@@ -2,6 +2,7 @@
 #include "editor-support/spine/spine-cocos2dx.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_spine_SkeletonRenderer_setTimeScale(lua_State* tolua_S)
 {
@@ -1565,8 +1566,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackCompleteListener(lua_State* tol
 		ok = false;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -1669,8 +1681,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setCompleteListener(lua_State* tolua_S)
         std::function<void (spTrackEntry *)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -1783,8 +1806,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackStartListener(lua_State* tolua_
 		ok = false;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -1910,8 +1944,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setDisposeListener(lua_State* tolua_S)
         std::function<void (spTrackEntry *)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -1968,8 +2013,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackInterruptListener(lua_State* to
 		ok = false;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -2022,8 +2078,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setEndListener(lua_State* tolua_S)
         std::function<void (spTrackEntry *)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -2080,8 +2147,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackDisposeListener(lua_State* tolu
 		ok = false;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -2134,8 +2212,20 @@ int lua_cocos2dx_spine_SkeletonAnimation_setEventListener(lua_State* tolua_S)
         std::function<void (spTrackEntry *, spEvent *)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0, spEvent* larg1) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spEvent*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -2245,8 +2335,20 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackEventListener(lua_State* tolua_
 		ok = false;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0, spEvent* larg1) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spEvent*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -2360,8 +2462,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setInterruptListener(lua_State* tolua_S
         std::function<void (spTrackEntry *)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -2515,8 +2628,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackEndListener(lua_State* tolua_S)
 		ok = false;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 3, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg1 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -2569,8 +2693,19 @@ int lua_cocos2dx_spine_SkeletonAnimation_setStartListener(lua_State* tolua_S)
         std::function<void (spTrackEntry *)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
+		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)

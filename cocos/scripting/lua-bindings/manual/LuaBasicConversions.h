@@ -35,6 +35,7 @@ extern "C" {
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 
 #include "scripting/lua-bindings/manual/Lua-BindingsExport.h"
+#include "scripting/lua-bindings/manual/CCLuaValue.h"
 #include "editor-support/cocostudio/CocosStudioExtension.h"
 #include "2d/CCLabel.h"
 #include "2d/CCSprite.h"
@@ -1315,6 +1316,19 @@ void std_map_string_string_to_luaval(lua_State* L, const std::map<std::string, s
 // Follow 2 function is added for Cocos Studio to make lua lib can be compile as dynamic library
 CC_LUA_DLL extern bool luaval_to_node(lua_State* L, int lo, const char* type, cocos2d::Node** node);
 CC_LUA_DLL extern void node_to_luaval(lua_State* L, const char* type, cocos2d::Node* node);
+
+// wraps a lua function
+class LuaFunctionWrapper
+{
+public:
+    LuaFunctionWrapper(lua_State* L, LUA_FUNCTION handler);
+    ~LuaFunctionWrapper();
+    lua_State* getLuaState() {return _state;};
+    LUA_FUNCTION getLuaFunction() {return _handler;};
+private:
+    lua_State* _state;
+    LUA_FUNCTION _handler;
+};
 
 // end group
 /// @}

@@ -3,6 +3,7 @@
 #include "ui/UIWebView.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_experimental_webview_WebView_setOpacityWebView(lua_State* tolua_S)
 {

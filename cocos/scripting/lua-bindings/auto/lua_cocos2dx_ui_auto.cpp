@@ -2,6 +2,7 @@
 #include "ui/CocosGUI.h"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
+#include "scripting/lua-bindings/manual/CCLuaEngine.h"
 
 int lua_cocos2dx_ui_LayoutParameter_clone(lua_State* tolua_S)
 {
@@ -9638,8 +9639,20 @@ int lua_cocos2dx_ui_CheckBox_addEventListener(lua_State* tolua_S)
         std::function<void (cocos2d::Ref *, cocos2d::ui::CheckBox::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0, cocos2d::ui::CheckBox::EventType larg1) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -9906,8 +9919,20 @@ int lua_cocos2dx_ui_RadioButton_addEventListener(lua_State* tolua_S)
         std::function<void (cocos2d::ui::RadioButton *, cocos2d::ui::RadioButton::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::ui::RadioButton* larg0, cocos2d::ui::RadioButton::EventType larg1) -> void {
+		            object_to_luaval<cocos2d::ui::RadioButton>(tolua_S, "ccui.RadioButton",(cocos2d::ui::RadioButton*)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -10423,8 +10448,21 @@ int lua_cocos2dx_ui_RadioButtonGroup_addEventListener(lua_State* tolua_S)
         std::function<void (cocos2d::ui::RadioButton *, int, cocos2d::ui::RadioButtonGroup::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::ui::RadioButton* larg0, int larg1, cocos2d::ui::RadioButtonGroup::EventType larg2) -> void {
+		            object_to_luaval<cocos2d::ui::RadioButton>(tolua_S, "ccui.RadioButton",(cocos2d::ui::RadioButton*)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg2);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 3);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -15709,8 +15747,20 @@ int lua_cocos2dx_ui_ScrollView_addEventListener(lua_State* tolua_S)
         std::function<void (cocos2d::Ref *, cocos2d::ui::ScrollView::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0, cocos2d::ui::ScrollView::EventType larg1) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -18616,8 +18666,20 @@ int lua_cocos2dx_ui_ListView_addEventListener(lua_State* tolua_S)
         std::function<void (cocos2d::Ref *, cocos2d::ui::ListView::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0, cocos2d::ui::ListView::EventType larg1) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -20697,8 +20759,20 @@ int lua_cocos2dx_ui_Slider_addEventListener(lua_State* tolua_S)
         std::function<void (cocos2d::Ref *, cocos2d::ui::Slider::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0, cocos2d::ui::Slider::EventType larg1) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -22488,8 +22562,20 @@ int lua_cocos2dx_ui_TextField_addEventListener(lua_State* tolua_S)
         std::function<void (cocos2d::Ref *, cocos2d::ui::TextField::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0, cocos2d::ui::TextField::EventType larg1) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -25085,8 +25171,20 @@ int lua_cocos2dx_ui_PageView_addEventListener(lua_State* tolua_S)
         std::function<void (cocos2d::Ref *, cocos2d::ui::PageView::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](cocos2d::Ref* larg0, cocos2d::ui::PageView::EventType larg1) -> void {
+		            object_to_luaval<cocos2d::Ref>(tolua_S, "cc.Ref",(cocos2d::Ref*)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -29191,8 +29289,19 @@ int lua_cocos2dx_ui_RichText_initWithXML(lua_State* tolua_S)
         ok &= luaval_to_ccvaluemap(tolua_S, 3, &arg1, "ccui.RichText:initWithXML");
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 4, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 4, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](const std::string& larg0) -> void {
+		            lua_pushlstring(tolua_S,larg0.c_str(),larg0.length());
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg2 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -30640,8 +30749,19 @@ int lua_cocos2dx_ui_RichText_createWithXML(lua_State* tolua_S)
         ok &= luaval_to_std_string(tolua_S, 2,&arg0, "ccui.RichText:createWithXML");
         ok &= luaval_to_ccvaluemap(tolua_S, 3, &arg1, "ccui.RichText:createWithXML");
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 4, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 4, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](const std::string& larg0) -> void {
+		            lua_pushlstring(tolua_S,larg0.c_str(),larg0.length());
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
+		    };
+		    arg2 = lambda;
 		} while(0)
 		;
         if(!ok)
@@ -39802,8 +39922,20 @@ int lua_cocos2dx_ui_TabControl_setTabChangedEventListener(lua_State* tolua_S)
         std::function<void (int, cocos2d::ui::TabControl::EventType)> arg0;
 
         do {
-			// Lambda binding for lua is not supported.
-			assert(false);
+		#if COCOS2D_DEBUG >= 1
+		    if (!toluafix_isfunction(tolua_S, 2, "LUA_FUNCTION", 0, &tolua_err))
+		    {
+		        goto tolua_lerror;
+		    }
+		#endif 
+		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
+		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
+		    auto lambda = [tolua_S, func](int larg0, cocos2d::ui::TabControl::EventType larg1) -> void {
+		            tolua_pushnumber(tolua_S,(lua_Number)larg0);
+		            tolua_pushnumber(tolua_S,(lua_Number)larg1);
+		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
+		    };
+		    arg0 = lambda;
 		} while(0)
 		;
         if(!ok)
