@@ -33,6 +33,8 @@ extern "C" {
 }
 #endif
 
+#include "editor-support/spine/spine-cocos2dx.h"
+
 /// @cond
 TOLUA_API int register_all_cocos2dx_spine_manual(lua_State* L);
 /// @endcond
@@ -50,6 +52,27 @@ TOLUA_API int register_all_cocos2dx_spine_manual(lua_State* L);
  * The current mechanism,this registering function is called in the lua_module_register.h
  */
 TOLUA_API int register_spine_module(lua_State* L);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void speventdata_to_luaval(lua_State* L, const spEventData& v);
+void spevent_to_luaval(lua_State* L, const spEvent& v);
+void spbonedata_to_luaval(lua_State* L, const const spBoneData* v);
+void spbone_to_luaval(lua_State* L, const spBone& v);
+void spskeleton_to_luaval(lua_State* L, const spSkeleton& v);
+void spattachment_to_luaval(lua_State* L, const spAttachment& v);
+void spslotdata_to_luaval(lua_State* L, const spSlotData& v);
+void spslot_to_luaval(lua_State* L, const spSlot& v);
+void sptimeline_to_luaval(lua_State* L, const spTimeline& v);
+void spanimationstate_to_luaval(lua_State* L, const spAnimationState& v);
+void spanimation_to_luaval(lua_State* L, const spAnimation& v);
+void sptrackentry_to_luaval(lua_State* L, const spTrackEntry& v);
+
+#ifdef __cplusplus
+}
+#endif
 
 // end group
 /// @}

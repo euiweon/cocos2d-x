@@ -1,5 +1,6 @@
 #include "scripting/lua-bindings/auto/lua_cocos2dx_spine_auto.hpp"
 #include "editor-support/spine/spine-cocos2dx.h"
+#include "scripting/lua-bindings/manual/spine/lua_cocos2dx_spine_manual.hpp"
 #include "scripting/lua-bindings/manual/tolua_fix.h"
 #include "scripting/lua-bindings/manual/LuaBasicConversions.h"
 #include "scripting/lua-bindings/manual/CCLuaEngine.h"
@@ -1193,7 +1194,7 @@ int lua_cocos2dx_spine_SkeletonRenderer_getSkeleton(lua_State* tolua_S)
             return 0;
         }
         spSkeleton* ret = cobj->getSkeleton();
-        #pragma warning NO CONVERSION FROM NATIVE FOR spSkeleton*;
+        spskeleton_to_luaval(tolua_S, *ret);
         return 1;
     }
     luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "sp.SkeletonRenderer:getSkeleton",argc, 0);
@@ -1575,7 +1576,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackCompleteListener(lua_State* tol
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg1 = lambda;
@@ -1637,7 +1638,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_findAnimation(lua_State* tolua_S)
             return 0;
         }
         spAnimation* ret = cobj->findAnimation(arg0);
-        #pragma warning NO CONVERSION FROM NATIVE FOR spAnimation*;
+        spanimation_to_luaval(tolua_S, *ret);
         return 1;
     }
     luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "sp.SkeletonAnimation:findAnimation",argc, 1);
@@ -1690,7 +1691,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setCompleteListener(lua_State* tolua_S)
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg0 = lambda;
@@ -1815,7 +1816,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackStartListener(lua_State* tolua_
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg1 = lambda;
@@ -1880,7 +1881,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_addEmptyAnimation(lua_State* tolua_S)
             return 0;
         }
         spTrackEntry* ret = cobj->addEmptyAnimation(arg0, arg1);
-        #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+        sptrackentry_to_luaval(tolua_S, *ret);
         return 1;
     }
     if (argc == 3) 
@@ -1900,7 +1901,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_addEmptyAnimation(lua_State* tolua_S)
             return 0;
         }
         spTrackEntry* ret = cobj->addEmptyAnimation(arg0, arg1, arg2);
-        #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+        sptrackentry_to_luaval(tolua_S, *ret);
         return 1;
     }
     luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "sp.SkeletonAnimation:addEmptyAnimation",argc, 2);
@@ -1953,7 +1954,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setDisposeListener(lua_State* tolua_S)
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg0 = lambda;
@@ -2022,7 +2023,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackInterruptListener(lua_State* to
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg1 = lambda;
@@ -2087,7 +2088,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setEndListener(lua_State* tolua_S)
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg0 = lambda;
@@ -2156,7 +2157,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackDisposeListener(lua_State* tolu
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg1 = lambda;
@@ -2221,8 +2222,8 @@ int lua_cocos2dx_spine_SkeletonAnimation_setEventListener(lua_State* tolua_S)
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0, spEvent* larg1) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spEvent*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
+		            spevent_to_luaval(tolua_S, *larg1);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
 		    };
 		    arg0 = lambda;
@@ -2287,7 +2288,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setEmptyAnimation(lua_State* tolua_S)
             return 0;
         }
         spTrackEntry* ret = cobj->setEmptyAnimation(arg0, arg1);
-        #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+        sptrackentry_to_luaval(tolua_S, *ret);
         return 1;
     }
     luaL_error(tolua_S, "%s has wrong number of arguments: %d, was expecting %d \n", "sp.SkeletonAnimation:setEmptyAnimation",argc, 2);
@@ -2344,8 +2345,8 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackEventListener(lua_State* tolua_
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0, spEvent* larg1) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spEvent*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
+		            spevent_to_luaval(tolua_S, *larg1);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 2);
 		    };
 		    arg1 = lambda;
@@ -2471,7 +2472,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setInterruptListener(lua_State* tolua_S
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg0 = lambda;
@@ -2637,7 +2638,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setTrackEndListener(lua_State* tolua_S)
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 3, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg1 = lambda;
@@ -2702,7 +2703,7 @@ int lua_cocos2dx_spine_SkeletonAnimation_setStartListener(lua_State* tolua_S)
 		    LUA_FUNCTION handler = toluafix_ref_function(tolua_S, 2, 0);
 		    std::shared_ptr<LuaFunctionWrapper> func(new LuaFunctionWrapper(tolua_S, handler));
 		    auto lambda = [tolua_S, func](spTrackEntry* larg0) -> void {
-		            #pragma warning NO CONVERSION FROM NATIVE FOR spTrackEntry*;
+		            sptrackentry_to_luaval(tolua_S, *larg0);
 		            LuaEngine::getInstance()->getLuaStack()->executeFunctionByHandler(func->getLuaFunction(), 1);
 		    };
 		    arg0 = lambda;

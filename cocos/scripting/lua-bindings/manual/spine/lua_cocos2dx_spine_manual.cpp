@@ -545,3 +545,505 @@ int register_spine_module(lua_State* L)
 
     return 1;
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void speventdata_to_luaval(lua_State* L, const spEventData& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+    lua_newtable(L);
+
+    lua_pushstring(L, "name");
+    lua_pushstring(L, v.name);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "intValue");
+    lua_pushnumber(L, (lua_Number)v.intValue);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "floatValue");
+    lua_pushnumber(L, (lua_Number)v.floatValue);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "stringValue");
+    lua_pushstring(L, v.stringValue);
+    lua_rawset(L, -3);
+}
+
+void spevent_to_luaval(lua_State* L, const spEvent& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+    lua_newtable(L);
+
+    lua_pushstring(L, "data");
+    speventdata_to_luaval(L, *v.data);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "intValue");
+    lua_pushnumber(L, (lua_Number)v.intValue);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "floatValue");
+    lua_pushnumber(L, (lua_Number)v.floatValue);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "stringValue");
+    lua_pushstring(L, v.stringValue);
+    lua_rawset(L, -3);
+}
+
+void spbonedata_to_luaval(lua_State* L, const spBoneData* v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+    lua_newtable(L);
+
+    lua_pushstring(L, "index");
+    lua_pushnumber(L, (lua_Number)v->index);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "name");
+    lua_pushstring(L, v->name);
+    lua_rawset(L, -3);
+
+    if (strcmp(v->name, "root") && v->parent)
+    {
+        lua_pushstring(L, "parent");
+        spbonedata_to_luaval(L, v->parent);
+        lua_rawset(L, -3);
+    }
+
+    lua_pushstring(L, "length");
+    lua_pushnumber(L, (lua_Number)v->length);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "x");
+    lua_pushnumber(L, (lua_Number)v->x);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "y");
+    lua_pushnumber(L, (lua_Number)v->y);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "rotation");
+    lua_pushnumber(L, (lua_Number)v->rotation);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "scaleX");
+    lua_pushnumber(L, (lua_Number)v->scaleX);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "scaleY");
+    lua_pushnumber(L, (lua_Number)v->scaleY);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "shearX");
+    lua_pushnumber(L, (lua_Number)v->shearX);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "shearX");
+    lua_pushnumber(L, (lua_Number)v->shearX);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "transformMode");
+    lua_pushnumber(L, (lua_Number)v->transformMode);
+    lua_rawset(L, -3);
+}
+
+void spbone_to_luaval(lua_State* L, const spBone& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+    lua_newtable(L);
+
+    lua_pushstring(L, "data");
+    spbonedata_to_luaval(L, v.data);
+    lua_rawset(L, -3);
+
+    if (strcmp(v.data->name, "root") && v.parent)
+    {
+        lua_pushstring(L, "parent");
+        spbone_to_luaval(L, *v.parent);
+        lua_rawset(L, -3);
+    }
+    
+    lua_pushstring(L, "x");
+    lua_pushnumber(L, (lua_Number)v.x);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "y");
+    lua_pushnumber(L, (lua_Number)v.y);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "rotation");
+    lua_pushnumber(L, (lua_Number)v.rotation);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "scaleX");
+    lua_pushnumber(L, (lua_Number)v.scaleX);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "scaleY");
+    lua_pushnumber(L, (lua_Number)v.scaleY);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "shearX");
+    lua_pushnumber(L, (lua_Number)v.shearX);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "shearY");
+    lua_pushnumber(L, (lua_Number)v.shearY);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "m00");
+    lua_pushnumber(L, (lua_Number)v.a);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "m01");
+    lua_pushnumber(L, (lua_Number)v.b);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "worldX");
+    lua_pushnumber(L, (lua_Number)v.worldX);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "m10");
+    lua_pushnumber(L, (lua_Number)v.c);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "m11");
+    lua_pushnumber(L, (lua_Number)v.d);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "worldX");
+    lua_pushnumber(L, (lua_Number)v.worldX);
+    lua_rawset(L, -3);
+}
+
+void spskeleton_to_luaval(lua_State* L, const spSkeleton& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+    lua_newtable(L);
+
+    lua_pushstring(L, "x");
+    lua_pushnumber(L, (lua_Number)v.x);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "y");
+    lua_pushnumber(L, (lua_Number)v.y);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "flipX");
+    lua_pushnumber(L, (lua_Number)v.flipX);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "flipY");
+    lua_pushnumber(L, (lua_Number)v.flipY);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "time");
+    lua_pushnumber(L, (lua_Number)v.time);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "boneCount");
+    lua_pushnumber(L, (lua_Number)v.bonesCount);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "slotCount");
+    lua_pushnumber(L, (lua_Number)v.slotsCount);
+    lua_rawset(L, -3);
+}
+
+void spattachment_to_luaval(lua_State* L, const spAttachment& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+    lua_newtable(L);
+
+    lua_pushstring(L, "name");
+    lua_pushstring(L, v.name);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "type");
+    lua_pushnumber(L, (lua_Number)v.type);
+    lua_rawset(L, -3);
+}
+
+void spColor_to_luaval(lua_State* L, const spColor& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+    lua_newtable(L);
+
+    lua_pushstring(L, "r");
+    lua_pushnumber(L, (lua_Number)v.r);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "g");
+    lua_pushnumber(L, (lua_Number)v.g);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "b");
+    lua_pushnumber(L, (lua_Number)v.b);
+    lua_rawset(L, -3);
+}
+
+void spslotdata_to_luaval(lua_State* L, const spSlotData& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+	lua_newtable(L);
+
+    lua_pushstring(L, "name");
+    lua_pushstring(L, v.name);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "attachmentName");
+    lua_pushstring(L, v.attachmentName);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "color");
+    spColor_to_luaval(L, v.color);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "darkColor");
+    spColor_to_luaval(L, *v.darkColor);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "blendMode");
+    lua_pushnumber(L, (lua_Number)v.blendMode);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "boneData");
+    spbonedata_to_luaval(L, v.boneData);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "index");
+    lua_pushnumber(L, (lua_Number)v.index);
+    lua_rawset(L, -3);
+}
+
+void spslot_to_luaval(lua_State* L, const spSlot& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+	lua_newtable(L);
+
+    lua_pushstring(L, "color");
+    spColor_to_luaval(L, v.color);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "darkColor");
+    spColor_to_luaval(L, *v.darkColor);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "bone");
+    spbone_to_luaval(L, *v.bone);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "attachment");
+    spattachment_to_luaval(L, *v.attachment);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "data");
+    spslotdata_to_luaval(L, *v.data);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "attachmentVerticesCapacity");
+    lua_pushnumber(L, (lua_Number)v.attachmentVerticesCapacity);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "attachmentVerticesCount");
+    lua_pushnumber(L, (lua_Number)v.attachmentVerticesCount);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "attachmentVertices");
+    lua_pushnumber(L, (lua_Number)*v.attachmentVertices);
+    lua_rawset(L, -3);
+}
+
+void sptimeline_to_luaval(lua_State* L, const spTimeline& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+	lua_newtable(L);
+
+    lua_pushstring(L, "type");
+    lua_pushnumber(L, (lua_Number)v.type);
+    lua_rawset(L, -3);
+}
+
+void spanimationstate_to_luaval(lua_State* L, const spAnimationState& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+	lua_newtable(L);
+
+    lua_pushstring(L, "timeScale");
+    lua_pushnumber(L, (lua_Number)v.timeScale);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "trackCount");
+    lua_pushnumber(L, (lua_Number)v.tracksCount);
+    lua_rawset(L, -3);
+}
+
+void spanimation_to_luaval(lua_State* L, const spAnimation& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+	lua_newtable(L);
+
+    lua_pushstring(L, "duration");
+    lua_pushnumber(L, (lua_Number)v.duration);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "timelineCount");
+    lua_pushnumber(L, (lua_Number)v.timelinesCount);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "name");
+    lua_pushstring(L, v.name);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "timelines");
+    sptimeline_to_luaval(L, **v.timelines);
+    lua_rawset(L, -3);
+}
+
+void sptrackentry_to_luaval(lua_State* L, const spTrackEntry& v)
+{
+    if (NULL  == L) {
+        return;
+    }
+
+	lua_newtable(L);
+
+    lua_pushstring(L, "animation");
+    spanimation_to_luaval(L, *v.animation);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "trackIndex");
+    lua_pushnumber(L, (lua_Number)v.trackIndex);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "loop");
+    lua_pushnumber(L, (lua_Number)v.loop);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "eventThreshold");
+    lua_pushnumber(L, (lua_Number)v.eventThreshold);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "attachmentThreshold");
+    lua_pushnumber(L, (lua_Number)v.attachmentThreshold);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "drawOrderThreshold");
+    lua_pushnumber(L, (lua_Number)v.drawOrderThreshold);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "animationStart");
+    lua_pushnumber(L, (lua_Number)v.animationStart);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "animationEnd");
+    lua_pushnumber(L, (lua_Number)v.animationEnd);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "animationLast");
+    lua_pushnumber(L, (lua_Number)v.animationLast);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "nextAnimationLast");
+    lua_pushnumber(L, (lua_Number)v.nextAnimationLast);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "delay");
+    lua_pushnumber(L, (lua_Number)v.delay);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "trackTime");
+    lua_pushnumber(L, (lua_Number)v.trackTime);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "trackLast");
+    lua_pushnumber(L, (lua_Number)v.trackLast);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "nextTrackLast");
+    lua_pushnumber(L, (lua_Number)v.nextTrackLast);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "trackEnd");
+    lua_pushnumber(L, (lua_Number)v.trackEnd);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "timeScale");
+    lua_pushnumber(L, (lua_Number)v.timeScale);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "alpha");
+    lua_pushnumber(L, (lua_Number)v.alpha);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "mixTime");
+    lua_pushnumber(L, (lua_Number)v.mixTime);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "mixDuration");
+    lua_pushnumber(L, (lua_Number)v.mixDuration);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "interruptAlpha");
+    lua_pushnumber(L, (lua_Number)v.interruptAlpha);
+    lua_rawset(L, -3);
+
+    lua_pushstring(L, "totalAlpha");
+    lua_pushnumber(L, (lua_Number)v.totalAlpha);
+    lua_rawset(L, -3);
+
+    if (v.timelinesRotation)
+    {
+        lua_pushstring(L, "timelinesRotation");
+        lua_pushnumber(L, (lua_Number)(*v.timelinesRotation));
+        lua_rawset(L, -3);
+    }
+
+    lua_pushstring(L, "timelinesRotationCount");
+    lua_pushnumber(L, (lua_Number)v.timelinesRotationCount);
+    lua_rawset(L, -3);
+}
+
+#ifdef __cplusplus
+}
+#endif
