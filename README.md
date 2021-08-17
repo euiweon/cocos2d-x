@@ -4,7 +4,7 @@ On Linux and Mac:
 
     # Install cocos2d-x with python2.7
     git clone https://github.com/WuJiayiSH/cocos2d-x.git
-    cd cocos2d-x && python download-deps.py
+    cd cocos2d-x
     git submodule update --init
     # export EMSDK_ROOT as environment variable
     ./setup.py
@@ -20,7 +20,7 @@ On Window, install ninja(https://github.com/ninja-build/ninja) and make sure it 
 
     # Install cocos2d-x with python2.7
     git clone https://github.com/WuJiayiSH/cocos2d-x.git
-    cd cocos2d-x && python download-deps.py
+    cd cocos2d-x
     git submodule update --init
     # export EMSDK_ROOT as environment variable
     python setup.py
@@ -81,13 +81,9 @@ Git user attention
 
          $ git clone https://github.com/cocos2d/cocos2d-x.git
 
-2. After cloning the repo, please execute `download-deps.py` to download and install dependencies.
+2. After cloning the repo.
 
          $ cd cocos2d-x
-         cocos2d-x $ python download-deps.py
-
-3. After running `download-deps.py`.
-
          cocos2d-x $ git submodule update --init
 
 Download stable versions
