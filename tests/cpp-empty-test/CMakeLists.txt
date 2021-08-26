@@ -162,8 +162,10 @@ if(EMSCRIPTEN)
                         "-sEXPORTED_FUNCTIONS=[_cocos_ccdirector_pause,_cocos_ccdirector_resume,_cocos_ccdirector_step,_cocos_ccnode_select,_main]"
                         "-sEXPORTED_RUNTIME_METHODS=[ccall,cwrap]"
                         )
-    set(EMSCRIPTEN_LINK_FLAGS "-lidbfs.js -s INITIAL_MEMORY=512MB -s WASM=0 --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/index.html --use-preload-cache")
-    
+    set(EMSCRIPTEN_LINK_FLAGS "-lidbfs.js -s INITIAL_MEMORY=512MB --shell-file ${CMAKE_CURRENT_SOURCE_DIR}/index.html --use-preload-cache")
+    # Disable wasm, generate js build
+    # string(APPEND EMSCRIPTEN_LINK_FLAGS " -s WASM=0")
+
     foreach(FOLDER IN LISTS GAME_RES_FOLDER)
         string(APPEND EMSCRIPTEN_LINK_FLAGS " --preload-file ${FOLDER}/@/")
     endforeach()
