@@ -31,6 +31,7 @@ On Window, install ninja(https://github.com/ninja-build/ninja) and make sure it 
     cd MyGame
     cocos compile -p emscripten -m release
 
+(On Windows earlier than 10, you might have to checkout emsdk 2.0.8 and fix URL in libjpeg.py manually, check https://github.com/emscripten-core/emscripten/issues/13067 and https://github.com/emscripten-core/emscripten/pull/13869 for more details)
 
 Known issues:
 1. CCLabelTTF must be associated with a ttf font. 
