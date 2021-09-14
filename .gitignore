@@ -127,9 +127,6 @@ tests/*/proj.android-studio/app/proguard-project.txt
 project.properties
 *.iml
 
-# Ignore prebuilt libraries folder
-/external/*
-!/external/config.json
 /templates/lua-template-runtime/runtime
 /v*-deps-*.zip
 /v*-lua-runtime-*.zip
