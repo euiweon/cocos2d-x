@@ -1,4 +1,4 @@
-In order to build cocos2d-x cpp & lua project into HTML5, make sure you have installed emsdk(https://emscripten.org/docs/getting_started/downloads.html) and cmake.
+In order to build cocos2d-x cpp & lua project into HTML5/wasm, make sure you have installed emsdk(https://emscripten.org/docs/getting_started/downloads.html) and cmake.
 
 On Linux and Mac:
 
@@ -33,6 +33,14 @@ On Window, install ninja(https://github.com/ninja-build/ninja) and make sure it 
 
 (On Windows earlier than 10, you might have to checkout emsdk 2.0.8 and fix URL in libjpeg.py manually, check https://github.com/emscripten-core/emscripten/issues/13067 and https://github.com/emscripten-core/emscripten/pull/13869 for more details)
 
+Thread support is enabled by default, the build need to be served with addtional headers for it to work, see https://developer.chrome.com/blog/enabling-shared-array-buffer/ 
+
+    Cross-Origin-Embedder-Policy: require-corp
+    Cross-Origin-Opener-Policy: same-origin
+
+It can be disabled by removing "-s USE_PTHREADS" from CmakeLists.txt, in the case most thread-related functions like addImageAsync will not work.
+Thread support uses Javascript SharedArrayBuffer, check https://caniuse.com/sharedarraybuffer for browser compatibility.
+
 Known issues:
 1. CCLabelTTF must be associated with a ttf font. 
 
@@ -46,8 +54,6 @@ Backlogs:
 4. Compile tiff, webp 
 5. Investigate getDuration, getCurrentTime, setCurrentTime in AudioEngine
 6. Response header in HttpResponse is missing
-
-You might also be able to build WASM, starts with removing "-s WASM=0" from CMakeLists.txt in your project root for fun.
 
 <img src="http://www.cocos2d-x.org/attachments/801/cocos2dx_portrait.png" width=200>
 
