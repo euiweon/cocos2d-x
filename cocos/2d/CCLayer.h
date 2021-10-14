@@ -412,6 +412,9 @@ protected:
     Color4F  _squareColors[4];
     CustomCommand _customCommand;
     Vec3 _noMVPVertices[4];
+    GLuint _vertexBuffer;
+    GLuint _colorBuffer;
+    bool _dirty;
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(LayerColor);
 
