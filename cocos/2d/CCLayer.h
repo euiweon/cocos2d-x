@@ -414,7 +414,8 @@ protected:
     Vec3 _noMVPVertices[4];
     GLuint _vertexBuffer;
     GLuint _colorBuffer;
-    bool _dirty;
+    bool _vertexDirty;
+    bool _colorDirty;
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(LayerColor);
 

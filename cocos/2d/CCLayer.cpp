@@ -465,8 +465,9 @@ __LayerRGBA::__LayerRGBA()
 
 LayerColor::LayerColor()
 :_vertexBuffer(0)
+,_vertexDirty(false)
 ,_colorBuffer(0)
-,_dirty(false)
+,_colorDirty(false)
 {
     // default blend function
     _blendFunc = BlendFunc::ALPHA_PREMULTIPLIED;
@@ -556,6 +557,16 @@ bool LayerColor::initWithColor(const Color4B& color, GLfloat w, GLfloat h)
         setContentSize(Size(w, h));
 
         setGLProgramState(GLProgramState::getOrCreateWithGLProgramName(GLProgram::SHADER_NAME_POSITION_COLOR_NO_MVP));
+
+        glGenBuffers(1, &_vertexBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(_noMVPVertices), _noMVPVertices, GL_DYNAMIC_DRAW);
+
+        glGenBuffers(1, &_colorBuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, _colorBuffer);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(_squareColors), _squareColors, GL_DYNAMIC_DRAW);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
         return true;
     }
     return false;
@@ -574,7 +585,7 @@ void LayerColor::setContentSize(const Size & size)
     _squareVertices[2].y = size.height;
     _squareVertices[3].x = size.width;
     _squareVertices[3].y = size.height;
-    _dirty = true;
+    _vertexDirty = true;
     Layer::setContentSize(size);
 }
 
@@ -603,7 +614,7 @@ void LayerColor::updateColor()
         _squareColors[i].a = _displayedOpacity / 255.0f;
     }
 
-    _dirty = true;
+    _colorBuffer = true;
 }
 
 void LayerColor::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
@@ -612,9 +623,9 @@ void LayerColor::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
     _customCommand.func = CC_CALLBACK_0(LayerColor::onDraw, this, transform, flags);
     renderer->addCommand(&_customCommand);
     
-    if(_dirty)
+    if(_vertexDirty)
     {
-        _dirty = false;
+        _vertexDirty = false;
         for(int i = 0; i < 4; ++i)
         {
             Vec4 pos;
@@ -624,16 +635,18 @@ void LayerColor::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
             _noMVPVertices[i] = Vec3(pos.x,pos.y,pos.z)/pos.w;
         }
 
-        glDeleteBuffers(1, &_vertexBuffer);
-        glDeleteBuffers(1, &_colorBuffer);
-
-        glGenBuffers(1, &_vertexBuffer);
         glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(_noMVPVertices), _noMVPVertices, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_noMVPVertices), _noMVPVertices);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+
+    if(_colorDirty)
+    {
+        _colorDirty = false;
         
-        glGenBuffers(1, &_colorBuffer);
         glBindBuffer(GL_ARRAY_BUFFER, _colorBuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(_squareColors), _squareColors, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(_squareColors), _squareColors);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
 }
 
