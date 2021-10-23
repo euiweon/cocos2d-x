@@ -41,9 +41,6 @@ Thread support is enabled by default, the build need to be served with addtional
 It can be disabled by removing "-s USE_PTHREADS" from CmakeLists.txt, in the case most thread-related functions like addImageAsync will not work.
 Thread support uses Javascript SharedArrayBuffer, check https://caniuse.com/sharedarraybuffer for browser compatibility.
 
-Known issues:
-1. CCLabelTTF must be associated with a ttf font. 
-
 TODO: 
 1. Files under WritablePath will be lost between game sessions
 
