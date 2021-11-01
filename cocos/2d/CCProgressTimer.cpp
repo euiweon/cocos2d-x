@@ -50,6 +50,9 @@ ProgressTimer::ProgressTimer()
 ,_vertexDataCount(0)
 ,_vertexData(nullptr)
 ,_reverseDirection(false)
+,_dirty(true)
+,_vbo(0)
+,_vboSize(0)
 {}
 
 ProgressTimer* ProgressTimer::create(Sprite* sp)
@@ -85,6 +88,7 @@ bool ProgressTimer::initWithSprite(Sprite* sp)
 
 ProgressTimer::~ProgressTimer()
 {
+    glDeleteBuffers(1, &_vbo);
     CC_SAFE_FREE(_vertexData);
     CC_SAFE_RELEASE(_sprite);
 }
@@ -203,6 +207,8 @@ void ProgressTimer::updateColor()
             _vertexData[i].colors = sc;
         }            
     }
+
+    _dirty = true;
 }
 
 void ProgressTimer::updateProgress()
@@ -510,14 +516,15 @@ void ProgressTimer::onDraw(const Mat4 &transform, uint32_t /*flags*/)
     getGLProgram()->setUniformsForBuiltins(transform);
 
     GL::blendFunc( _sprite->getBlendFunc().src, _sprite->getBlendFunc().dst );
-
+    
+    glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     GL::enableVertexAttribs(GL::VERTEX_ATTRIB_FLAG_POS_COLOR_TEX );
 
     GL::bindTexture2D( _sprite->getTexture() );
-
-    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(_vertexData[0]) , &_vertexData[0].vertices);
-    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(_vertexData[0]), &_vertexData[0].texCoords);
-    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(_vertexData[0]), &_vertexData[0].colors);
+        
+    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_POSITION, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid*) offsetof( V2F_C4B_T2F, vertices));
+    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_TEX_COORD, 2, GL_FLOAT, GL_FALSE, sizeof(V2F_C4B_T2F), (GLvoid*) offsetof( V2F_C4B_T2F, texCoords));;
+    glVertexAttribPointer( GLProgram::VERTEX_ATTRIB_COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(V2F_C4B_T2F), (GLvoid*) offsetof( V2F_C4B_T2F, colors));
 
     if(_type == Type::RADIAL)
     {
@@ -539,6 +546,8 @@ void ProgressTimer::onDraw(const Mat4 &transform, uint32_t /*flags*/)
             CC_INCREMENT_GL_DRAWN_BATCHES_AND_VERTICES(2,_vertexDataCount);
         }
     }
+    
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void ProgressTimer::draw(Renderer *renderer, const Mat4 &transform, uint32_t flags)
@@ -549,6 +558,28 @@ void ProgressTimer::draw(Renderer *renderer, const Mat4 &transform, uint32_t fla
     _customCommand.init(_globalZOrder, transform, flags);
     _customCommand.func = CC_CALLBACK_0(ProgressTimer::onDraw, this, transform, flags);
     renderer->addCommand(&_customCommand);
+
+    if(_dirty)
+    {
+        _dirty = false;
+        
+        GLuint vboSize = sizeof(V2F_C4B_T2F) * _vertexDataCount;
+        if(vboSize > _vboSize)
+        {
+            glDeleteBuffers(1, &_vbo);
+            glGenBuffers(1, &_vbo);
+            glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+            glBufferData(GL_ARRAY_BUFFER, vboSize, _vertexData, GL_DYNAMIC_DRAW);
+            _vboSize = vboSize;
+        }
+        else
+        {
+            glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+            glBufferSubData(GL_ARRAY_BUFFER, 0, vboSize, _vertexData);
+        }
+        
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
 }
 
 

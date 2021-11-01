@@ -199,6 +199,9 @@ protected:
 
     bool _reverseDirection;
 
+    bool _dirty;
+    GLuint _vbo;
+    GLuint _vboSize;
 private:
     CC_DISALLOW_COPY_AND_ASSIGN(ProgressTimer);
 };
