@@ -1,0 +1,352 @@
+<!doctype html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Emscripten-Generated Code</title>
+    <style>
+      .emscripten { padding-right: 0; margin-left: auto; margin-right: auto; display: block; }
+      textarea.emscripten { font-family: monospace; display: none; width: 100%}
+      div.emscripten { margin-left: 0px; text-align: center; }
+      div.emscripten_border { margin-left: 0px; border: 1px solid black; }
+      /* the canvas *must not* have any border or padding, or mouse coords will be wrong */
+      canvas.emscripten { border: 0px none; background-color: black; }
+
+      ol {
+        list-style-type: circle;
+      }
+      li {
+        white-space: nowrap;
+      }
+      table, tr, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+        width: 100%
+      }
+      .sidebar {
+        height: 100%;
+        width: 0px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        overflow-x: hidden;
+        border: 1px solid black;
+        background-color: white;
+      }
+      @-webkit-keyframes rotation {
+        from {-webkit-transform: rotate(0deg);}
+        to {-webkit-transform: rotate(360deg);}
+      }
+      @-moz-keyframes rotation {
+        from {-moz-transform: rotate(0deg);}
+        to {-moz-transform: rotate(360deg);}
+      }
+      @-o-keyframes rotation {
+        from {-o-transform: rotate(0deg);}
+        to {-o-transform: rotate(360deg);}
+      }
+      @keyframes rotation {
+        from {transform: rotate(0deg);}
+        to {transform: rotate(360deg);}
+      }
+
+    </style>
+  </head>
+  <body>
+    
+    
+    <div valign="top" class="sidebar">
+      <input type="search" id="searchBar" placeholder="Search..."/>
+      <input type="button" value="Find" onclick="Module.hierarchyFind(1)">
+      <input type="button" value="Prev" onclick="Module.hierarchyFind(-1)"/>
+      <input type="button" value="Clear" onclick="Module.hierarchySelect(Module.hierarchySelect.selected)"/>
+      <div id="hierarchy" style="height:300px;overflow:auto;border: 1px solid black;"></div>
+      <table >
+        <tbody>
+          <tr id="nodeProperty0" style="display:none;background:#ddd;"><th  colspan="2"></th></tr>
+          <tr id="nodeProperty1" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty2" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty3" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty4" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty5" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty6" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty7" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty8" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty9" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty10" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty11" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty12" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty13" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty14" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty15" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty16" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty17" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty18" style="display:none;"><td></td><td></td></tr>
+          <tr id="nodeProperty19" style="display:none;"><td></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="emscripten_border">
+      <div class="emscripten" id="status">Downloading...</div>
+      <div class="emscripten">
+        <progress value="0" max="100" id="progress" hidden=1></progress>  
+      </div>
+      <canvas class="emscripten" id="canvas"  oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    </div>
+    <div class="emscripten">
+      <input type="checkbox" id="resize">Resize canvas
+      <input type="checkbox" id="pointerLock" checked>Lock/hide mouse pointer
+      &nbsp;&nbsp;&nbsp;
+      <input type="button" value="Fullscreen" onclick="Module.requestFullscreen(document.getElementById('pointerLock').checked, 
+                                                                                document.getElementById('resize').checked)">
+      |
+      <input type="button" value="Pause" onclick="Module.ccall('cocos_ccdirector_pause')">
+      <input type="button" value="Resume" onclick="Module.ccall('cocos_ccdirector_resume')">
+      <input type="button" value="Step" onclick="Module.ccall('cocos_ccdirector_step')">
+    </div>
+    
+    <div class="emscripten">
+      <textarea class="emscripten" id="output" rows="8"></textarea>
+    </div>
+
+    <script type='text/javascript'>
+      var statusElement = document.getElementById('status');
+      var progressElement = document.getElementById('progress');
+      
+      var hierarchyElement = document.getElementById('hierarchy');
+      var nodeProperties = [];
+      for(var i = 0; i < 20; i++) {
+        nodeProperties[i] = document.getElementById('nodeProperty' + i);
+      }
+      var Module = {
+        preRun: [],
+        postRun: [],
+        print: (function() {
+          var element = document.getElementById('output');
+          if (element) element.value = ''; // clear browser cache
+          return function(text) {
+            if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+            // These replacements are necessary if you render to raw HTML
+            //text = text.replace(/&/g, "&amp;");
+            //text = text.replace(/</g, "&lt;");
+            //text = text.replace(/>/g, "&gt;");
+            //text = text.replace('\n', '<br>', 'g');
+            console.log(text);
+            if (element) {
+              element.value += text + "\n";
+              element.scrollTop = element.scrollHeight; // focus on bottom
+            }
+          };
+        })(),
+        printErr: function(text) {
+          if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+          console.error(text);
+        },
+        canvas: (function() {
+          var canvas = document.getElementById('canvas');
+
+          // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+          // application robust, you may want to override this behavior before shipping!
+          // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+          canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+          return canvas;
+        })(),
+        setStatus: function(text) {
+          if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+          if (text === Module.setStatus.last.text) return;
+          var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+          var now = Date.now();
+          if (m && now - Module.setStatus.last.time < 30) return; // if this is a progress update, skip it if too soon
+          Module.setStatus.last.time = now;
+          Module.setStatus.last.text = text;
+          if (m) {
+            text = m[1];
+            progressElement.value = parseInt(m[2])*100;
+            progressElement.max = parseInt(m[4])*100;
+            progressElement.hidden = false;
+          } else {
+            progressElement.value = null;
+            progressElement.max = null;
+            progressElement.hidden = true;
+          }
+          statusElement.innerHTML = text;
+        },
+        totalDependencies: 0,
+        monitorRunDependencies: function(left) {
+          this.totalDependencies = Math.max(this.totalDependencies, left);
+          Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+        },
+        cocosNodeEntered: function(node, parent, name, desc) {
+          var ol = document.createElement('ol');
+          var li = document.createElement('li');
+          var div = document.createElement('div');
+          li.setAttribute('id', node);
+          div.innerText = name + desc.split('|', 2)[0].substring(1);
+          div.onclick = function (oEvent) {
+            Module.hierarchySelect(this.parentElement.id);
+          }
+          li.appendChild(div)
+          ol.appendChild(li);
+          if (parent === 0) {
+            Module.hierarchySelect.selected = String(node);
+            div.style.color = 'blue';
+            hierarchyElement.appendChild(ol);
+          } else {
+            var parentElement = document.getElementById(parent);
+            if (parentElement) {
+              parentElement.appendChild(ol);
+            } else {
+              console.error('cocosNodeEntered: Parent node not found, IntPtr: ' + parent);
+            }
+          }
+        },
+        cocosNodeExited: function(node) {
+          var element = document.getElementById(node);
+          if (element) {
+            element.remove();
+          }
+
+          if (Module.hierarchySelect.selected === String(node)) {
+            Module.hierarchySelect.selected = 0;
+          }
+        },
+        cocosNodeNameChanged: function(node, name, desc) {
+          var element = document.getElementById(node);
+          if (element) {
+            element.firstElementChild.innerText = name + desc.split('|', 2)[0].substring(1);
+          }
+        },
+        cocosNodeSelected: function(desc) {
+          var className, properties;
+          [className, properties] = desc.split('|');
+          nodeProperties[0].firstElementChild.innerText = className.substring(1);
+          nodeProperties[0].style.display = 'table-row';
+
+          var split = properties.split('=');
+          var kvPairs = [];
+          for(var i = 0; i < split.length; i++) {
+            if (i == 0) {
+              kvPairs.push(split[i].trim())
+            } else if (i == split.length - 1) {
+              kvPairs.push(split[i].slice(0, -1).trim())
+            } else {
+              var lastIndexOfComma = split[i].lastIndexOf(',')
+              if (lastIndexOfComma >= 0) {
+                kvPairs.push(split[i].substring(0, lastIndexOfComma).trim())
+                kvPairs.push(split[i].substring(lastIndexOfComma + 1).trim())
+              }
+            }
+          }
+
+          for(var i = 1; i < nodeProperties.length; i++) {
+            if (kvPairs[(i - 1) * 2]) {
+              if (nodeProperties[i].children[0].innerText !== kvPairs[(i - 1) * 2]) {
+                nodeProperties[i].children[0].innerText = kvPairs[(i - 1) * 2]
+              }
+              if (nodeProperties[i].children[1].innerText !== kvPairs[(i - 1) * 2 + 1]) {
+                nodeProperties[i].children[1].innerText = kvPairs[(i - 1) * 2 + 1]
+              }
+              nodeProperties[i].style.display = 'table-row';
+            } else {
+              nodeProperties[i].style.display = 'none';
+            }
+          }
+        },
+        hierarchyFind(move) {
+          var queryText = document.getElementById('searchBar').value.toLowerCase();
+          var items = hierarchyElement.getElementsByTagName('li');
+          var selectedItems = [];
+          var selectedIndex = -1;
+          for (var i = 0; i < items.length; i++) {
+              if(queryText && items[i].firstElementChild.textContent.toLowerCase().indexOf(queryText) >= 0) {
+                selectedItems.push(items[i]);
+              } else {
+                items[i].firstElementChild.style.color = '#ddd';
+              }
+          }
+
+          if (selectedItems.length > 0) {
+            for (var i = 0; i < selectedItems.length; i++) {
+              if (selectedItems[i].id === Module.hierarchySelect.selected) {
+                selectedIndex = i;
+                break;
+              }
+            }
+            
+            selectedIndex = (selectedIndex + move) % selectedItems.length;
+            while(selectedIndex < 0) {
+              selectedIndex += selectedItems.length;
+            }
+
+            for (var i = 0; i < selectedItems.length; i++) {
+              if (i === selectedIndex) {
+                selectedItems[i].firstElementChild.style.color = 'blue';
+                Module.hierarchySelect.selected = selectedItems[i].id;
+              } else {
+                selectedItems[i].firstElementChild.style.color = 'black';
+              }
+            }
+          } else {
+            Module.hierarchySelect.selected = 0;
+            for(var i = 1; i < nodeProperties.length; i++) {
+              nodeProperties[i].style.display = 'none';
+            }
+          }
+        },
+        hierarchySelect(node) {
+          Module.hierarchySelect.selected = node;
+          document.getElementById('searchBar').value = '';
+          var items = hierarchyElement.getElementsByTagName('li');
+          for (var i = 0; i < items.length; i++) {
+            if (items[i].id === node) {
+              items[i].firstElementChild.style.color = 'blue';
+            } else {
+              items[i].firstElementChild.style.color = 'black';
+            }
+          }
+        },
+        initializeDevTools() {
+          var nodeSelect = Module.cwrap('cocos_ccnode_select', null, ['number']);
+          setInterval(function() { 
+            if (Module.hierarchySelect.selected) {
+              nodeSelect(Number(Module.hierarchySelect.selected));
+            }
+          }, 100);
+          var output = document.getElementById('output');
+          output.style.display = 'inline';
+
+          var elements = document.querySelectorAll('div.emscripten, div.emscripten_border')
+          for (var i = 0; i < elements.length; i++) {
+            elements[i].style.marginLeft = "315px"
+          }
+
+          var sidebar = document.querySelector('div.sidebar')
+          sidebar.style.width = "315px"
+        }
+      };
+      Module.setStatus('Downloading...');
+      window.onerror = function() {
+        Module.setStatus('Exception thrown, see JavaScript console');
+        Module.setStatus = function(text) {
+          if (text) Module.printErr('[post-exception status] ' + text);
+        };
+      };
+    </script>
+    <script type='text/javascript'>
+      Module.preRun.push(function() {
+        addRunDependency('sync_writable_path')
+        FS.mkdir('/cocos2dxWritablePath')
+        FS.mount(IDBFS, {}, '/cocos2dxWritablePath')
+        FS.syncfs(true, function (err) {
+          if (err) {
+            throw err
+          }
+          removeRunDependency('sync_writable_path')
+        })
+      })
+    </script>
+    {{{ SCRIPT }}}
+  </body>
+</html>

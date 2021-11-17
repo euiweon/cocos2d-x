@@ -1,0 +1,280 @@
+<html>
+
+<head>
+    <title>Super Wired Editor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="emscripten">
+        <canvas id="canvas" class="emscripten"  oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
+    </div>
+    <section>
+        <article class="column-left">
+            <div class="dropdown">
+                <button onclick="toggleFile()" class="dropbtn">File</button>
+                <div id="fileDropDown" class="dropdown-content">
+                    <a onclick="fileImport()">Import</a>
+                    <a onclick="fileMkdir()">New Folder</a>
+                </div>
+            </div>
+            <nav id="filePath">
+            </nav>
+            <ul id="fileList"></ul>
+        </article>
+        <article class="column-right">
+            <div class="dropdown">
+                <button class="dropbtn">Edit</button>
+                <!-- <div id="fileDropDown" class="dropdown-content">
+                    <a onclick="fileNew()">New</a>
+                    <a onclick="fileOpen()">Open</a>
+                    <a onclick="fileSave()">Save</a>
+                </div> -->
+            </div>
+            <div id="rete" class="node-editor"></div>
+        </article>
+    </section>
+    
+    <script>
+        /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
+        function toggleFile(e) {
+            document.getElementById("fileDropDown").classList.toggle("show");
+        }
+
+        /* Import arbitrary file into writable path*/
+        function fileImport() {
+            var fileInput = document.createElement("input");
+            fileInput.multiple = true;
+            fileInput.type = "file";
+            fileInput.addEventListener("change", async function () {
+                var nav = document.getElementById("filePath");
+                var dir = nav.dataset.current;
+                for(var file of fileInput.files) {
+                    var result = await new Promise((resolve, reject) => {
+                        let reader = new FileReader();
+                        reader.readAsArrayBuffer(file);
+                        reader.onload = function () {
+                            resolve(reader.result)
+                        };
+                        reader.onerror = reject;
+                    })
+                    
+                    FS.writeFile(dir + "/" + file.name, new Uint8Array(result));
+                }
+
+                fileRefreshCurrent();
+                fileSystemSync();
+            });
+
+            var form = document.createElement("form");
+            form.appendChild(fileInput);
+            fileInput.click();
+        }
+
+        /* Change current directory */
+        function fileChangeDirectory(dir) {
+            var nav = document.getElementById("filePath")
+            while (nav.firstChild) {
+                nav.removeChild(nav.lastChild);
+            }
+
+            var dirnames = dir.split("/");
+            for (var i = 0; i < dirnames.length; i++) {
+                var dirname = dirnames[i];
+                if (dirname) {
+                    var a = document.createElement("a");
+                    a.innerText = "/" + dirname;
+                    a.href = "#"
+                    let path = dirnames.slice(0, i + 1).join("/");
+                    a.onclick = function() {fileChangeDirectory(path);return false;};
+                    nav.appendChild(a);
+                    nav.append(" ")
+                }
+            }
+            nav.dataset.current = dir;
+            fileRefreshCurrent();
+        }
+
+        /* Refresh current file list */
+        var fileRefreshCurrentTimeout = 0;
+        function fileRefreshCurrent() {
+            clearTimeout(fileRefreshCurrentTimeout);
+            fileRefreshCurrentTimeout = setTimeout(() => {
+                var nav = document.getElementById("filePath");
+                var dir = nav.dataset.current;
+                
+                // clean up
+                var ul = document.getElementById("fileList");
+                while (ul.firstChild) {
+                    ul.removeChild(ul.lastChild);
+                }
+
+                // see S_ISDIR POSIX macro
+                var S_IFMT = 00170000;
+                var S_IFDIR = 0040000;
+
+                // starts from 2 to ignore "." and ".."
+                var fileList = FS.readdir(dir);
+                for (var i = 2; i < fileList.length; i++) {
+                    var filename = fileList[i];
+                    var li = document.createElement("li");
+                    var path = `${dir}/${filename}`
+                    if ((FS.stat(path).mode & S_IFMT) === S_IFDIR) { // if dir
+                        li.innerHTML = `<a href="#" onclick="fileChangeDirectory('${path}');return false;">${filename}</a>
+                        <a onclick="fileDeleteDirectory('${path}')">❎</a>`;
+                    } else {
+                        li.innerHTML = filename + `<a onclick="fileDeleteFile('${path}')">❎</a>
+                        <a onclick="fileDownload('${path}')">🔽</a>`;
+                    }
+                    
+                    ul.appendChild(li);
+                }
+            }, 100);
+        }
+
+        function fileDeleteDirectory(path) {
+            if (!confirm(`Removing folder: ${path}, are you sure?`)) {
+                return;
+            }
+
+            try {
+                FS.rmdir(path);
+                fileRefreshCurrent();
+                fileSystemSync();
+            } catch (err) {
+                alert(err)
+            }
+        }
+
+        function fileDeleteFile(path) {
+            if (!confirm(`Removing file: ${path}, are you sure?`)) {
+                return;
+            }
+
+            FS.unlink(path);
+            fileRefreshCurrent();
+            fileSystemSync();
+        }
+
+        function fileDownload(path) {
+            var blob = new Blob([ FS.readFile(path) ]);
+            var a = document.createElement( 'a' );
+            a.href = URL.createObjectURL( blob );
+            
+            var filename = path.substring(path.lastIndexOf('/') + 1);
+            a.download = filename;
+
+            a.click();
+        }
+
+        function fileMkdir() {
+            var nav = document.getElementById("filePath");
+            var dirname = window.prompt("Please enter folder name", "Untitled");
+            try {
+                FS.mkdir(nav.dataset.current + "/" + dirname);
+                fileRefreshCurrent();
+                fileSystemSync();
+            } catch (err) {
+                alert(err)
+            }
+        }
+
+        /* Sync writable path to indexedDB*/
+        var fileSystemSyncTimeout = 0;
+        function fileSystemSync() {
+            clearTimeout(fileSystemSyncTimeout)
+            fileSystemSyncTimeout = setTimeout(() => {
+                FS.syncfs(function (err) {
+                    err && alert(err);
+                });
+            }, 100);
+        }
+
+        // Close the dropdown menu if the user clicks outside of it
+        window.onclick = function (event) {
+            if (!event.target.matches(".dropbtn")) {
+                var dropdowns = document.getElementsByClassName("dropdown-content");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains("show")) {
+                        openDropdown.classList.remove("show");
+                    }
+                }
+            }
+        }
+
+        var Module = {
+            preRun: [function() {
+                addRunDependency('sync_writable_path')
+                FS.mkdir('/cocos2dxWritablePath')
+                FS.mount(IDBFS, {}, '/cocos2dxWritablePath')
+                FS.syncfs(true, function (err) {
+                    if (err) {
+                        throw err
+                    }
+                    removeRunDependency('sync_writable_path')
+                })
+            }],
+            postRun: [],
+            print: function (text) {
+                if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
+                console.log(text);
+            },
+            printErr: function (text) {
+                if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
+                console.error(text);
+            },
+            canvas: (function () {
+                var canvas = document.getElementById("canvas");
+
+                // As a default initial behavior, pop up an alert when webgl context is lost. To make your
+                // application robust, you may want to override this behavior before shipping!
+                // See http://www.khronos.org/registry/webgl/specs/latest/1.0/#5.15.2
+                canvas.addEventListener("webglcontextlost", function (e) {
+                    alert("WebGL context lost. You will need to reload the page.");
+                    e.preventDefault();
+                }, false);
+
+                return canvas;
+            })(),
+
+            totalDependencies: 0,
+            monitorRunDependencies: function (left) {
+                this.totalDependencies = Math.max(this.totalDependencies, left);
+                Module.setStatus(left ? "Preparing... (" + (this.totalDependencies - left) + "/" + this
+                    .totalDependencies + ")" : "All downloads complete.");
+            },
+            cocosNodeEntered: function () {},
+            cocosNodeExited: function () {},
+            cocosNodeNameChanged: function () {},
+            cocosNodeSelected: function () {},
+            initializeDevTools() {},
+            setStatus(text) {
+                if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(" ");
+                console.log("[Status] " + text);
+            },
+            runtimeInitialized: false,
+            onRuntimeInitialized: function() {
+                this.runtimeInitialized = true;
+                fileChangeDirectory("/cocos2dxWritablePath");
+            }
+        };
+
+        window.editor = {};
+    </script>
+    <script async type="text/javascript" src="renderer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.14"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rete@1.4.5/build/rete.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rete-area-plugin@0.2.1/build/area-plugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rete-vue-render-plugin@0.5.1/build/vue-render-plugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rete-connection-plugin@0.9.0/build/connection-plugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rete-context-menu-plugin@0.6.0/build/context-menu-plugin.min.js"></script>
+    <!-- <script src="data.js"></script> -->
+    <script src="controls.js"></script>
+    <script src="components.js"></script>
+    <script src="index.js"></script>
+</body>
+
+</html>
