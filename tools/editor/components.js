@@ -36,6 +36,37 @@ Rete.Component.prototype.addNodeInputs = function() {
     this._node.data.$childrenCount = 0; // will be restored when node connect
 }
 
+Rete.Component.prototype.addCustomInputs = function() {
+    if (!this._node.data.$customInputs) {
+        return this;
+    }
+
+    for (var key in this._node.data.$customInputs) {
+        var typename = this._node.data.$customInputs[key];
+        this.addProperty({
+            key: key,
+            default: editor.default(typename),
+            socket: editor.socket(typename),
+            control: editor.control(typename)
+        })
+    }
+
+    return this;
+}
+
+Rete.Component.prototype.addCustomOutputs = function() {
+    if (!this._node.data.$customOutputs) {
+        return this;
+    }
+
+    for (var key in this._node.data.$customOutputs) {
+        var typename = this._node.data.$customOutputs[key];
+        this._node.addOutput(new Rete.Output(key, key, editor.socket(typename), false));
+    }
+
+    return this;
+}
+
 editor.socket = function(typename) {
     var data = this.socket.data;
     if (!data[typename]) {
@@ -385,6 +416,7 @@ editor.component.data = {
                 socket: editor.socket("string"),
                 control: editor.control("string")
             })
+            .addCustomInputs();
             
             node.addOutput(new Rete.Output("output", "Component", editor.socket("cc.Component"), true));
         }
@@ -416,25 +448,6 @@ editor.component.data = {
     
         worker(node, inputs, outputs) {}
     },
-    "i18n": class extends Rete.Component {
-        constructor() {
-            super("i18n");
-        }
-    
-        builder(node) {
-            this.bind(node)
-            .addProperty({
-                key: "path",
-                default: "",
-                socket: editor.socket("string"),
-                control: editor.control("string")
-            })
-            
-            node.addOutput(new Rete.Output("output", "String", editor.socket("string"), true));
-        }
-    
-        worker(node, inputs, outputs) {}
-    },
     // A special component which only executes once and the output will always be the one of that execution.
     "singleton": class extends Rete.Component {
         constructor() {
@@ -444,6 +457,25 @@ editor.component.data = {
         builder(node) {
             node.addInput(new Rete.Input("input", "Node", editor.socket("cc.Node")));
             node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), true));
+        }
+    
+        worker(node, inputs, outputs) {}
+    },
+    "LuaFunction": class extends Rete.Component {
+        constructor() {
+            super("LuaFunction");
+        }
+    
+        builder(node) {
+            this.bind(node)
+            .addProperty({
+                key: "filepath",
+                default: "",
+                socket: editor.socket("string"),
+                control: editor.control("string")
+            })
+            .addCustomInputs()
+            .addCustomOutputs();
         }
     
         worker(node, inputs, outputs) {}

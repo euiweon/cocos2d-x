@@ -24,12 +24,12 @@
         </article>
         <article class="column-right">
             <div class="dropdown">
-                <button class="dropbtn">Edit</button>
-                <!-- <div id="fileDropDown" class="dropdown-content">
-                    <a onclick="fileNew()">New</a>
-                    <a onclick="fileOpen()">Open</a>
-                    <a onclick="fileSave()">Save</a>
-                </div> -->
+                <button onclick="toggleCustomInput()" class="dropbtn">Custom Input</button>
+                <button onclick="toggleCustomOutput()" class="dropbtn">Custom Output</button>
+                <div id="customInputDropDown" class="dropdown-content">
+                </div>
+                <div id="customOutputDropDown" class="dropdown-content">
+                </div>
             </div>
             <div id="rete" class="node-editor"></div>
         </article>
@@ -39,6 +39,14 @@
         /* When the user clicks on the button, toggle between hiding and showing the dropdown content */
         function toggleFile(e) {
             document.getElementById("fileDropDown").classList.toggle("show");
+        }
+
+        function toggleCustomInput(e) {
+            document.getElementById("customInputDropDown").classList.toggle("show");
+        }
+
+        function toggleCustomOutput(e) {
+            document.getElementById("customOutputDropDown").classList.toggle("show");
         }
 
         /* Import arbitrary file into writable path*/
@@ -271,7 +279,7 @@
     <script src="https://cdn.jsdelivr.net/npm/rete-vue-render-plugin@0.5.1/build/vue-render-plugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/rete-connection-plugin@0.9.0/build/connection-plugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/rete-context-menu-plugin@0.6.0/build/context-menu-plugin.min.js"></script>
-    <!-- <script src="data.js"></script> -->
+    <script src="default.js"></script>
     <script src="controls.js"></script>
     <script src="components.js"></script>
     <script src="index.js"></script>

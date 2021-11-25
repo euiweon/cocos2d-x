@@ -3,6 +3,9 @@ local editor = {}
 -- forward declaration
 local parse
 
+-- policies
+local customAsProperties = {} -- assaign custom input values to lua object
+
 local function c3b(color)
   return {
     r = tonumber(string.sub(color, 2, 3), 16),
@@ -41,50 +44,58 @@ end
 
 local types = {
   ["cc.Scene"] = {
-    class = cc.Scene,
-    constructor = cc.Scene.create,
-    initializers = {},
+    constructor = function ()
+      return cc.Scene:create()
+    end,
     readers = {}
   },
   ["cc.Node"] = {
-    class = cc.Node,
-    constructor = cc.Node.create,
-    initializers = {},
+    constructor = function ()
+      return cc.Node:create()
+    end,
     readers = {readNodeProperty}
   },
   ["cc.Sprite"] = {
-    class = cc.Sprite,
-    constructor = cc.Sprite.create,
-    initializers = {"filename"},
+    constructor = function (data)
+      return cc.Sprite:create(data.filename)
+    end,
     readers = {readNodeProperty}
   },
   ["cc.ParticleSystemQuad"] = {
-    class = cc.ParticleSystemQuad,
-    constructor = cc.ParticleSystemQuad.create,
-    initializers = {"filename"},
+    constructor = function (data)
+      return cc.ParticleSystemQuad:create(data.filename)
+    end,
     readers = {readNodeProperty}
   },
   ["cc.Label"] = {
-    class = cc.Label,
-    constructor = cc.Label.createWithTTF,
-    initializers = {"text", "fontFilePath", "fontSize"},
+    constructor = function (data)
+      return cc.Label:createWithTTF(data.text, data.fontFilePath, data.fontSize)
+    end,
     readers = {readNodeProperty, readLabelProperty},
   },
   ["cc.ComponentLua"] = {
-    class = cc.ComponentLua,
-    constructor = cc.ComponentLua.create,
-    initializers = {"filename"},
+    constructor = function (data)
+      return cc.ComponentLua:create(data.filename)
+    end,
     readers = {},
+    policies = {customAsProperties}
   },
   ["cc.MoveTo"] = {
-    class = cc.MoveTo,
-    constructor = cc.MoveTo.create,
-    initializers = {"duration", "position"},
+    constructor = function (data)
+      return cc.MoveTo:create(data.duration, data.position)
+    end,
     readers = {},
   },
-  ["i18n"] = {
-    constructor = i18n,
-    initializers = {"path"},
+  ["singleton"] = {
+    constructor = function (data)
+      return data.input
+    end,
+    readers = {},
+  },
+  ["LuaFunction"] = {
+    constructor = function (data)
+      return require(data.filepath)(data)
+    end,
     readers = {},
   },
 }
@@ -130,20 +141,7 @@ parse = function(reteRoot, key)
   end
 
   local type = types[className]
-  local paramKeys = type.initializers
-  local paramValues = {}
-  for i, v in ipairs(paramKeys) do
-    paramValues[i] = data[v]
-  end
-
-  local class = type.class
-  local node
-  if class then
-    node = type.constructor(class, unpack(paramValues))
-  else
-    node = type.constructor(unpack(paramValues))
-  end
-
+  local node = type.constructor(data)
   assert(node ~= nil , "failed to parse node " .. key)
 
   local readers = type.readers
@@ -161,6 +159,16 @@ parse = function(reteRoot, key)
 
   for _, component in ipairs(components) do
     node:addComponent(component)
+  end
+
+  if type.policies then
+    for _, policy in ipairs(type.policies) do
+      if policy == customAsProperties then
+        for k, _ in pairs(data["$customInputs"]) do
+          node[k] = data[k]
+        end
+      end
+    end
   end
 
   -- cache inputs and output

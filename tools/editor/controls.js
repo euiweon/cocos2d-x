@@ -228,3 +228,69 @@ editor.control.data = {
         }
     }
 };
+
+var customInputDropDown = document.getElementById("customInputDropDown")
+for (let typename in editor.control.data) {
+    var a = document.createElement("a");
+    a.innerText = "Add Custom Input(" + typename + ")";
+    a.href = "#"
+    a.onclick = function() {
+        var selected = editor.rete.selected.list[0]
+        if (selected) {
+            var inputName = window.prompt("Please enter input name", "Untitled");
+            if (!inputName) {
+                return;
+            }
+            
+            // add new input, this can error by duplicated name so data left intact
+            var input = new Rete.Input(inputName, typename, editor.socket(typename));
+            var controlClazz = editor.control(typename);
+            input.addControl(new controlClazz(editor.rete, inputName, false));
+            selected.addInput(input);
+            selected.data[inputName] = editor.default(typename)
+
+            // update data 
+            if (!selected.data.$customInputs) {
+                selected.data.$customInputs = {}
+            }
+            selected.data.$customInputs[inputName] = typename;
+
+            // auto save
+            var json = JSON.stringify(editor.rete.toJSON());
+            localStorage.setItem("autosave", json);
+        }
+        return false;
+    };
+    customInputDropDown.appendChild(a);
+}
+
+
+var customOutputDropDown = document.getElementById("customOutputDropDown")
+for (let typename in editor.control.data) {
+    var a = document.createElement("a");
+    a.innerText = "Add Custom Output(" + typename + ")";
+    a.href = "#"
+    a.onclick = function() {
+        var selected = editor.rete.selected.list[0]
+        if (selected) {
+            var outputName = window.prompt("Please enter output name", "output");
+            if (!outputName) {
+                return;
+            }
+            
+            selected.addOutput(new Rete.Output(outputName, outputName, editor.socket(typename), false));
+
+            // update data 
+            if (!selected.data.$customOutputs) {
+                selected.data.$customOutputs = {}
+            }
+            selected.data.$customOutputs[outputName] = typename;
+
+            // auto save
+            var json = JSON.stringify(editor.rete.toJSON());
+            localStorage.setItem("autosave", json);
+        }
+        return false;
+    };
+    customOutputDropDown.appendChild(a);
+}

@@ -43,24 +43,24 @@
 
     // if a node/action is connected as a child, add a new node/action socket
     editor.on("connectionremoved", async(e) => {
-        if (e.input.socket.name == "cc.Node") {
+        if (e.input.socket.name == "cc.Node" && e.input.key.startsWith("child.")) {
             var node = e.input.node;
             node.data.$childrenCount--;
         }
 
-        if (e.input.socket.name == "cc.Component") {
+        if (e.input.socket.name == "cc.Component" && e.input.key.startsWith("component.")) {
             var node = e.input.node;
             node.data.$componentCount--;
         }
 
-        if (e.input.socket.name == "cc.Action") {
+        if (e.input.socket.name == "cc.Action" && e.input.key.startsWith("action.")) {
             var node = e.input.node;
             node.data.$actionCount--;
         }
     });
 
     editor.on("connectioncreated", async(e) => {
-        if (e.input.socket.name == "cc.Node") {
+        if (e.input.socket.name == "cc.Node" && e.input.key.startsWith("child.")) {
             var node = e.input.node;
             node.data.$childrenCount++;
 
@@ -71,7 +71,7 @@
             }
         }
 
-        if (e.input.socket.name == "cc.Component") {
+        if (e.input.socket.name == "cc.Component" && e.input.key.startsWith("component.")) {
             var node = e.input.node;
             node.data.$componentCount++;
 
@@ -82,7 +82,7 @@
             }
         }
 
-        if (e.input.socket.name == "cc.Action") {
+        if (e.input.socket.name == "cc.Action" && e.input.key.startsWith("action.")) {
             var node = e.input.node;
             node.data.$actionCount++;
 
@@ -97,4 +97,5 @@
     editor.view.resize();
     AreaPlugin.zoomAt(editor);
     editor.trigger("process");
+    window.editor.rete = editor;
 })();

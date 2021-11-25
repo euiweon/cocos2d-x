@@ -24,9 +24,3 @@ CC_DESIGN_RESOLUTION = {
         end
     end
 }
-
-i18n = function (path)
-    return path
-end
-
-
