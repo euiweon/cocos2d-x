@@ -10,7 +10,8 @@
     editor.use(ConnectionPlugin.default);
     editor.use(VueRenderPlugin.default);
     editor.use(ContextMenuPlugin.default);
-    editor.use(AreaPlugin);
+    editor.use(MinimapPlugin.default);
+    editor.use(CommentPlugin.default);
 
     var engine = new Rete.Engine("editor@0.0.1");
 
@@ -95,7 +96,6 @@
     });
 
     editor.view.resize();
-    AreaPlugin.zoomAt(editor);
     editor.trigger("process");
     window.editor.rete = editor;
 })();

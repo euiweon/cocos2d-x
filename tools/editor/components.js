@@ -61,7 +61,7 @@ Rete.Component.prototype.addCustomOutputs = function() {
 
     for (var key in this._node.data.$customOutputs) {
         var typename = this._node.data.$customOutputs[key];
-        this._node.addOutput(new Rete.Output(key, key, editor.socket(typename), false));
+        this._node.addOutput(new Rete.Output(key, key, editor.socket(typename), true));
     }
 
     return this;
@@ -133,7 +133,7 @@ editor.component.data = {
             })
             node.addInput(new Rete.Input("action", "Action", editor.socket("cc.Action")));
             this.addNodeInputs();
-            node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), false));
+            node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), true));
         }
     
         worker(node, inputs, outputs) {}
