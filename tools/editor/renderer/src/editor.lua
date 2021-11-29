@@ -6,39 +6,43 @@ local parse
 -- policies
 local customAsProperties = {} -- assaign custom input values to lua object
 
-local function c3b(color)
-  return {
-    r = tonumber(string.sub(color, 2, 3), 16),
-    g = tonumber(string.sub(color, 4, 5), 16),
-    b = tonumber(string.sub(color, 6, 7), 16)
-  }
-end
-
-local function c4b(color, opacity)
-  local result = c3b(color)
-  result.a = opacity or 255
-  return result
-end
-
 local function readNodeProperty(node, data)
   node:setPosition(data.position)
   node:setRotation(data.rotation)
   node:setScale(data.scale.x, data.scale.y)
   node:setAnchorPoint(data.anchorPoint)
   node:setContentSize(data.contentSize)
-  node:setColor(c3b(data.color))
+  node:setColor(data.color)
   node:setOpacity(data.opacity)
 end
 
 local function readLabelProperty(label, data)
-  label:setTextColor(c4b(data.textColor))
+  local color = {
+    r = data.textColor.r,
+    g = data.textColor.g,
+    b = data.textColor.b,
+    a = 255
+  }
+  label:setTextColor(color)
 
   if data.outlineEnabled then
-    label:enableOutline(c4b(data.outlineColor, data.outlineOpacity), data.outlineSize)
+    local color = {
+      r = data.outlineColor.r,
+      g = data.outlineColor.g,
+      b = data.outlineColor.b,
+      a = data.outlineOpacity
+    }
+    label:enableOutline(color, data.outlineSize)
   end
 
   if data.shadowEnabled then
-    label:enableShadow(c4b(data.shadowColor, data.shadowOpacity), data.shadowOffset)
+    local color = {
+      r = data.shadowColor.r,
+      g = data.shadowColor.g,
+      b = data.shadowColor.b,
+      a = data.shadowOpacity
+    }
+    label:enableShadow(color, data.shadowOffset)
   end
 end
 

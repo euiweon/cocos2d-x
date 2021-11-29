@@ -121,7 +121,7 @@ editor.component.data = {
             })
             .addProperty({
                 key: "color",
-                default: "#ffffff",
+                default: {r: 255, g: 255, b: 255},
                 socket: editor.socket("cc.Color3B"),
                 control: editor.control("cc.Color3B")
             })
@@ -177,7 +177,7 @@ editor.component.data = {
             })
             .addProperty({
                 key: "color",
-                default: "#ffffff",
+                default: {r: 255, g: 255, b: 255},
                 socket: editor.socket("cc.Color3B"),
                 control: editor.control("cc.Color3B")
             })
@@ -239,7 +239,7 @@ editor.component.data = {
             })
             .addProperty({
                 key: "color",
-                default: "#ffffff",
+                default: {r: 255, g: 255, b: 255},
                 socket: editor.socket("cc.Color3B"),
                 control: editor.control("cc.Color3B")
             })
@@ -301,7 +301,7 @@ editor.component.data = {
             })
             .addProperty({
                 key: "color",
-                default: "#ffffff",
+                default: {r: 255, g: 255, b: 255},
                 socket: editor.socket("cc.Color3B"),
                 control: editor.control("cc.Color3B")
             })
@@ -331,7 +331,7 @@ editor.component.data = {
             })
             .addProperty({
                 key: "textColor",
-                default: "#ffffff",
+                default: {r: 255, g: 255, b: 255},
                 socket: editor.socket("cc.Color3B"),
                 control: editor.control("cc.Color3B")
             })

@@ -7,6 +7,6 @@ editor.default.data = {
   "cc.Size": { width: 0, height: 0 },
   "float": 0,
   "string": "",
-  "cc.Color3B": "#ffffff",
-  "bool": false
+  "cc.Color3B": {r: 255, g: 255, b: 255},
+  "bool": false,
 };

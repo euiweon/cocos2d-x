@@ -174,13 +174,32 @@ editor.control.data = {
                         this.update();
                     },
                     update() {
-                        if (this.ikey)
-                            this.putData(this.ikey, this.value)
+                        if (this.ikey) {
+                            var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(this.value);
+                            rgb = rgb ? 
+                            {
+                                r: parseInt(rgb[1], 16),
+                                g: parseInt(rgb[2], 16),
+                                b: parseInt(rgb[3], 16)
+                            } : 
+                            {
+                                r: 255,
+                                g: 255,
+                                b: 255
+                            };
+                            this.putData(this.ikey, rgb);
+                        }
+                            
                         this.emitter.trigger("process");
                     }
                 },
                 mounted() {
-                    this.value = this.getData(this.ikey);
+                    var rgb = this.getData(this.ikey);
+                    var hex = "#" + 
+                    (rgb.r + 256).toString(16).substring(1) + 
+                    (rgb.g + 256).toString(16).substring(1) + 
+                    (rgb.b + 256).toString(16).substring(1);
+                    this.value = hex;
                 }
             };
             this.props = { emitter, ikey: key, readonly };
