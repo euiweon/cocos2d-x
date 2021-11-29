@@ -28,7 +28,8 @@
 
     // autosave
     var timeout = 0;
-    editor.on("process nodecreated noderemoved connectionremoved connectioncreated", async() => {
+    editor.bind("reloadrenderer");
+    editor.on("process nodecreated noderemoved connectionremoved connectioncreated reloadrenderer", async() => {
         clearTimeout(timeout);
         timeout = setTimeout(function() {
             var json = JSON.stringify(editor.toJSON());

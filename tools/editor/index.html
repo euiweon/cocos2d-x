@@ -1,7 +1,7 @@
 <html>
 
 <head>
-    <title>Super Wired Editor</title>
+    <title>Node-based Scene Builder</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -24,6 +24,10 @@
         </article>
         <article class="column-right">
             <div class="dropdown">
+                <button onclick="toggleEdit()" class="dropbtn">Edit</button>
+                <div id="editDropDown" class="dropdown-content">
+                    <a onclick="reloadRenderer()">Reload Renderer</a>
+                </div>
                 <button onclick="toggleCustomInput()" class="dropbtn">Custom Input</button>
                 <button onclick="toggleCustomOutput()" class="dropbtn">Custom Output</button>
                 <div id="customInputDropDown" class="dropdown-content">
@@ -47,6 +51,14 @@
 
         function toggleCustomOutput(e) {
             document.getElementById("customOutputDropDown").classList.toggle("show");
+        }
+
+        function toggleEdit(e) {
+            document.getElementById("editDropDown").classList.toggle("show");
+        }
+
+        function reloadRenderer(e) {
+            editor.rete.trigger("reloadrenderer");
         }
 
         /* Import arbitrary file into writable path*/
