@@ -421,6 +421,12 @@ editor.component.data = {
         builder(node) {
             this.bind(node)
             .addProperty({
+                key: "name",
+                default: "Untitled",
+                socket: editor.socket("string"),
+                control: editor.control("string")
+            })
+            .addProperty({
                 key: "filename",
                 default: "",
                 socket: editor.socket("string"),

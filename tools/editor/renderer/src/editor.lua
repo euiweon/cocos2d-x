@@ -46,6 +46,10 @@ local function readLabelProperty(label, data)
   end
 end
 
+local function readComponentLuaProperty(node, data)
+  node:setName(data.name)
+end
+
 local function readParticleSystemQuadProperty(node, data)
   node:setBlendFunc(data.blendFunc)
 end
@@ -85,7 +89,7 @@ local types = {
     constructor = function (data)
       return cc.ComponentLua:create(data.filename)
     end,
-    readers = {},
+    readers = {readComponentLuaProperty},
     policies = {customAsProperties}
   },
   ["cc.MoveTo"] = {
