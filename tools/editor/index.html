@@ -14,8 +14,12 @@
             <div class="dropdown">
                 <button onclick="toggleFile()" class="dropbtn">File</button>
                 <div id="fileDropDown" class="dropdown-content">
-                    <a onclick="fileImport()">Import</a>
-                    <a onclick="fileMkdir()">New Folder</a>
+                    <a onclick="fileImport()">Import...</a>
+                    <a onclick="fileMkdir()">New Folder...</a>
+                    <a onclick="fileNewScene()">New Scene...</a>
+                    <a onclick="fileNewLayer()">New Layer...</a>
+                    <a onclick="fileSave()">Save</a>
+                    <a onclick="fileSave(true)">Save As...</a>
                 </div>
             </div>
             <nav id="filePath">
@@ -28,8 +32,8 @@
                 <div id="editDropDown" class="dropdown-content">
                     <a onclick="reloadRenderer()">Reload Renderer</a>
                 </div>
-                <button onclick="toggleCustomInput()" class="dropbtn">Custom Input</button>
-                <button onclick="toggleCustomOutput()" class="dropbtn">Custom Output</button>
+                <button onclick="toggleCustomInput()" class="dropbtn">Input</button>
+                <button onclick="toggleCustomOutput()" class="dropbtn">Output</button>
                 <div id="customInputDropDown" class="dropdown-content">
                 </div>
                 <div id="customOutputDropDown" class="dropdown-content">
@@ -141,10 +145,14 @@
                     var path = `${dir}/${filename}`
                     if ((FS.stat(path).mode & S_IFMT) === S_IFDIR) { // if dir
                         li.innerHTML = `<a href="#" onclick="fileChangeDirectory('${path}');return false;">${filename}</a>
-                        <a onclick="fileDeleteDirectory('${path}')">❎</a>`;
+                        <a href="#" onclick="fileDeleteDirectory('${path}');return false;">❎</a>`;
+                    } else if (filename.endsWith(".json")) {
+                        li.innerHTML = ` <a href="#" onclick="fileOpen('${path}');return false;">${filename}</a>
+                        <a href="#" onclick="fileDeleteFile('${path}');return false;">❎</a>
+                        <a href="#" onclick="fileDownload('${path}');return false;">🔽</a>`;
                     } else {
-                        li.innerHTML = filename + `<a onclick="fileDeleteFile('${path}')">❎</a>
-                        <a onclick="fileDownload('${path}')">🔽</a>`;
+                        li.innerHTML = `${filename}<a href="#" onclick="fileDeleteFile('${path}');return false;">❎</a>
+                        <a href="#" onclick="fileDownload('${path}');return false;">🔽</a>`;
                     }
                     
                     ul.appendChild(li);
@@ -187,9 +195,52 @@
             a.click();
         }
 
+        function fileOpen(path) {
+            var json = FS.readFile(path, {encoding: "utf8"})
+            editor.rete.fromJSON(JSON.parse(json));
+            editor.editing = path;
+        }
+
+        function fileNewLayer() {
+            editor.rete.fromJSON(modulesData["layer.rete"].data);
+            delete editor.editing;
+        }
+
+        function fileNewScene() {
+            editor.rete.fromJSON(modulesData["scene.rete"].data);
+            delete editor.editing;
+        }
+
+        function fileSave(isSaveAs = false) {
+            var json = JSON.stringify(editor.rete.toJSON());
+
+            if (!editor.editing || isSaveAs) {
+                var nav = document.getElementById("filePath");
+                var dir = nav.dataset.current;
+                var filename = window.prompt("Please enter file name", "Untitled.json");
+                if (!filename) {
+                    return;
+                }
+
+                editor.editing = dir + "/" + filename;
+                FS.writeFile(dir + "/" + filename, json);
+                fileRefreshCurrent();
+                fileSystemSync();
+            } else {
+                FS.writeFile(editor.editing, json);
+                fileSystemSync();
+            }
+
+            alert(`Saved to ${editor.editing}`);
+        }
+
         function fileMkdir() {
             var nav = document.getElementById("filePath");
             var dirname = window.prompt("Please enter folder name", "Untitled");
+            if (!dirname) {
+                return;
+            }
+            
             try {
                 FS.mkdir(nav.dataset.current + "/" + dirname);
                 fileRefreshCurrent();
@@ -292,6 +343,7 @@
     <script src="https://cdn.jsdelivr.net/npm/rete-context-menu-plugin@0.6.0/build/context-menu-plugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/rete-minimap-plugin@0.3.1/build/minimap-plugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/rete-comment-plugin@0.7.0-rc.1/build/comment-plugin.min.js"></script>
+    <script src="data.js"></script>
     <script src="default.js"></script>
     <script src="controls.js"></script>
     <script src="components.js"></script>

@@ -413,6 +413,18 @@ editor.component.data = {
     
         worker(node, inputs, outputs) {}
     },
+    "cc.Layer": class extends Rete.Component {
+        constructor() {
+            super("cc.Layer");
+        }
+    
+        builder(node) {
+            this.bind(node);
+            this.addNodeInputs();
+        }
+    
+        worker(node, inputs, outputs) {}
+    },
     "cc.ComponentLua": class extends Rete.Component {
         constructor() {
             super("cc.ComponentLua");

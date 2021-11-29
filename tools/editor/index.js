@@ -24,6 +24,10 @@
     var autosave = localStorage.getItem("autosave");
     if (autosave) {
         editor.fromJSON(JSON.parse(autosave));
+        var editing = localStorage.getItem("editing");
+        if (editing) {
+            window.editor.editing = editing;
+        }
     }
 
     // autosave
@@ -34,12 +38,29 @@
         timeout = setTimeout(function() {
             var json = JSON.stringify(editor.toJSON());
             localStorage.setItem("autosave", json);
-
-            // reload scene in game
-            Module.runtimeInitialized && Module.ccall("executeLuaString", 
+            if (window.editor.editing) {
+                localStorage.setItem("editing", window.editor.editing);
+            } else {
+                localStorage.removeItem("editing");
+            }
+            
+            if (editor.nodes[0].name == "cc.Scene") {
+                Module.runtimeInitialized && Module.ccall("executeLuaString", 
                 "number",
                 ["string"],
                 ["cc.Director:getInstance():replaceScene(editor.load(json.decode(" + JSON.stringify(json) + ")))"]);
+            }
+            else if (editor.nodes[0].name == "cc.Layer") {
+                Module.runtimeInitialized && Module.ccall("executeLuaString", 
+                "number",
+                ["string"],
+                [`local scene = cc.Scene:create()
+                scene:addChild(editor.load(json.decode(${JSON.stringify(json)})))
+                cc.Director:getInstance():replaceScene(scene)`]);
+            } else {
+                console.error("Cannot render " + editor.nodes[0].name)
+            }
+            
         }, 1000);
     });
 

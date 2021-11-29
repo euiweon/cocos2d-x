@@ -61,6 +61,12 @@ local types = {
     end,
     readers = {}
   },
+  ["cc.Layer"] = {
+    constructor = function ()
+      return cc.Layer:create()
+    end,
+    readers = {}
+  },
   ["cc.Node"] = {
     constructor = function ()
       return cc.Node:create()
