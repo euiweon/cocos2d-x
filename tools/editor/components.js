@@ -8,7 +8,7 @@ Rete.Component.prototype.addProperty = function(param) {
         this._node.data[param.key] = param.default;
     }
     var input = new Rete.Input(param.key, param.socket.name, param.socket);
-    input.addControl(new param.control(this.editor, param.key, param.readonly || false, param.default));
+    input.addControl(new param.control(this.editor, param.key, param.readonly || false));
     this._node.addInput(input);
     return this;
 }
@@ -43,12 +43,16 @@ Rete.Component.prototype.addCustomInputs = function() {
 
     for (var key in this._node.data.$customInputs) {
         var typename = this._node.data.$customInputs[key];
-        this.addProperty({
-            key: key,
-            default: editor.default(typename),
-            socket: editor.socket(typename),
-            control: editor.control(typename)
-        })
+        if (editor.control(typename)) {
+            this.addProperty({
+                key: key,
+                default: editor.default(typename),
+                socket: editor.socket(typename),
+                control: editor.control(typename)
+            })
+        } else {
+            this._node.addInput(new Rete.Input(key, key, editor.socket(typename)));
+        }
     }
 
     return this;
@@ -131,7 +135,7 @@ editor.component.data = {
                 socket: editor.socket("float"),
                 control: editor.control("float")
             })
-            node.addInput(new Rete.Input("action", "Action", editor.socket("cc.Action")));
+            
             this.addNodeInputs();
             node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), true));
         }
@@ -193,7 +197,6 @@ editor.component.data = {
                 socket: editor.socket("string"),
                 control: editor.control("string")
             })
-            node.addInput(new Rete.Input("action", "Action", editor.socket("cc.Action")));
             this.addNodeInputs();
             node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), true));
         }
@@ -255,7 +258,7 @@ editor.component.data = {
                 socket: editor.socket("string"),
                 control: editor.control("string")
             })
-            node.addInput(new Rete.Input("action", "Action", editor.socket("cc.Action")));
+            
             this.addNodeInputs();
             node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), true));
         }
@@ -384,7 +387,7 @@ editor.component.data = {
                 control: editor.control("float")
             })
             
-            node.addInput(new Rete.Input("action", "Action", editor.socket("cc.Action")));
+            
             this.addNodeInputs();
             node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), true));
         }
@@ -449,14 +452,15 @@ editor.component.data = {
         worker(node, inputs, outputs) {}
     },
     // A special component which only executes once and the output will always be the one of that execution.
-    "singleton": class extends Rete.Component {
+    "UniqueOutput": class extends Rete.Component {
         constructor() {
-            super("singleton");
+            super("UniqueOutput");
         }
     
         builder(node) {
-            node.addInput(new Rete.Input("input", "Node", editor.socket("cc.Node")));
-            node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), true));
+            this.bind(node)
+            .addCustomInputs()
+            .addCustomOutputs();
         }
     
         worker(node, inputs, outputs) {}
@@ -481,3 +485,67 @@ editor.component.data = {
         worker(node, inputs, outputs) {}
     }
 };
+
+var customIO = ["cc.Node", "cc.Action", "cc.Component", "LuaFunction"]
+var customInputDropDown = document.getElementById("customInputDropDown")
+customIO.map( (typename) => {
+    var a = document.createElement("a");
+    a.innerText = "Add Custom Input(" + typename + ")";
+    a.href = "#"
+    a.onclick = function() {
+        var selected = editor.rete.selected.list[0]
+        if (selected) {
+            var inputName = window.prompt("Please enter input name", "Untitled");
+            if (!inputName) {
+                return;
+            }
+            
+            // add new input, this can error by duplicated name so data left intact
+            var input = new Rete.Input(inputName, inputName, editor.socket(typename));
+            selected.addInput(input);
+
+            // update data 
+            if (!selected.data.$customInputs) {
+                selected.data.$customInputs = {}
+            }
+            selected.data.$customInputs[inputName] = typename;
+
+            // auto save
+            var json = JSON.stringify(editor.rete.toJSON());
+            localStorage.setItem("autosave", json);
+        }
+        return false;
+    };
+    customInputDropDown.appendChild(a);
+})
+
+
+var customOutputDropDown = document.getElementById("customOutputDropDown")
+customIO.map( (typename) => {
+    var a = document.createElement("a");
+    a.innerText = "Add Custom Output(" + typename + ")";
+    a.href = "#"
+    a.onclick = function() {
+        var selected = editor.rete.selected.list[0]
+        if (selected) {
+            var outputName = window.prompt("Please enter output name", "output");
+            if (!outputName) {
+                return;
+            }
+            
+            selected.addOutput(new Rete.Output(outputName, outputName, editor.socket(typename), true));
+
+            // update data 
+            if (!selected.data.$customOutputs) {
+                selected.data.$customOutputs = {}
+            }
+            selected.data.$customOutputs[outputName] = typename;
+
+            // auto save
+            var json = JSON.stringify(editor.rete.toJSON());
+            localStorage.setItem("autosave", json);
+        }
+        return false;
+    };
+    customOutputDropDown.appendChild(a);
+})

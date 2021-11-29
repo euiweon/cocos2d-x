@@ -90,7 +90,7 @@ local types = {
     end,
     readers = {},
   },
-  ["singleton"] = {
+  ["UniqueOutput"] = {
     constructor = function (data)
       return data.input
     end,
@@ -108,8 +108,8 @@ parse = function(reteRoot, key)
   local reteNode = reteRoot.nodes[key]
   local className = reteNode.name
 
-  -- singleton is special component which only executes once and always return the result of that execution
-  if className == "singleton" then
+  -- UniqueOutput is special component which only executes once and always return the output of that execution
+  if className == "UniqueOutput" then
     if reteNode["$$"] then
       return reteNode["$$"].output
     end
@@ -167,7 +167,7 @@ parse = function(reteRoot, key)
 
   if type.policies then
     for _, policy in ipairs(type.policies) do
-      if policy == customAsProperties then
+      if policy == customAsProperties and data["$customInputs"] then
         for k, _ in pairs(data["$customInputs"]) do
           node[k] = data[k]
         end
