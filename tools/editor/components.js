@@ -197,6 +197,13 @@ editor.component.data = {
                 socket: editor.socket("string"),
                 control: editor.control("string")
             })
+            .addProperty({
+                key: "blendFunc",
+                default: editor.default("cc.BlendFunc"),
+                socket: editor.socket("cc.BlendFunc"),
+                control: editor.control("cc.BlendFunc")
+            })
+            
             this.addNodeInputs();
             node.addOutput(new Rete.Output("output", "Node", editor.socket("cc.Node"), true));
         }

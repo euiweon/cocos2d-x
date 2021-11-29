@@ -46,6 +46,10 @@ local function readLabelProperty(label, data)
   end
 end
 
+local function readParticleSystemQuadProperty(node, data)
+  node:setBlendFunc(data.blendFunc)
+end
+
 local types = {
   ["cc.Scene"] = {
     constructor = function ()
@@ -69,7 +73,7 @@ local types = {
     constructor = function (data)
       return cc.ParticleSystemQuad:create(data.filename)
     end,
-    readers = {readNodeProperty}
+    readers = {readNodeProperty, readParticleSystemQuadProperty}
   },
   ["cc.Label"] = {
     constructor = function (data)

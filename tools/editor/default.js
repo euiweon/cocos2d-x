@@ -9,4 +9,5 @@ editor.default.data = {
   "string": "",
   "cc.Color3B": {r: 255, g: 255, b: 255},
   "bool": false,
+  "cc.BlendFunc": { src: 0x1, dst: 0x303 } // ONE, ONE_MINUS_SRC_ALPHA
 };

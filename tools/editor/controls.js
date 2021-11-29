@@ -116,6 +116,44 @@ editor.control.data = {
             this.vueContext.value = val;
         }
     },
+    "cc.BlendFunc": class extends Rete.Control {
+        constructor(emitter, key, readonly) {
+            super(key);
+            this.component = {
+                props: ["readonly", "emitter", "ikey", "getData", "putData"],
+                template: `<div>
+                ${key}
+                <input type="number" class="grid1x1" data-field="dst" :readonly="readonly" :value="value.dst" @input="change($event)" @dblclick.stop=""/>
+                <input type="number" class="grid1x1" data-field="src" :readonly="readonly" :value="value.src" @input="change($event)" @dblclick.stop=""/>
+                </div>`,
+    
+                data() {
+                    return {
+                        value: { src: 0x1, dst: 0x303 },
+                    }
+                },
+                methods: {
+                    change(e) {
+                        this.value[e.target.dataset.field] = +e.target.value;
+                        this.update();
+                    },
+                    update() {
+                        if (this.ikey)
+                            this.putData(this.ikey, this.value)
+                        this.emitter.trigger("process");
+                    }
+                },
+                mounted() {
+                    this.value = this.getData(this.ikey);
+                }
+            };
+            this.props = { emitter, ikey: key, readonly };
+        }
+    
+        setValue(val) {
+            this.vueContext.value = val;
+        }
+    },
     "string": class extends Rete.Control {
         constructor(emitter, key, readonly) {
             super(key);
