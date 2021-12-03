@@ -3,9 +3,6 @@ local editor = {}
 -- forward declaration
 local parse
 
--- policies
-local customAsProperties = {} -- assaign custom input values to lua object
-
 local function readNodeProperty(node, data)
   node:setPosition(data.position)
   node:setRotation(data.rotation)
@@ -44,10 +41,6 @@ local function readLabelProperty(label, data)
     }
     label:enableShadow(color, data.shadowOffset)
   end
-end
-
-local function readComponentLuaProperty(node, data)
-  node:setName(data.name)
 end
 
 local function readParticleSystemQuadProperty(node, data)
@@ -91,13 +84,6 @@ local types = {
     end,
     readers = {readNodeProperty, readLabelProperty},
   },
-  ["cc.ComponentLua"] = {
-    constructor = function (data)
-      return cc.ComponentLua:create(data.filename)
-    end,
-    readers = {readComponentLuaProperty},
-    policies = {customAsProperties}
-  },
   ["cc.MoveTo"] = {
     constructor = function (data)
       return cc.MoveTo:create(data.duration, data.position)
@@ -131,7 +117,7 @@ parse = function(reteRoot, key)
 
   local children = {}
   local actions = {}
-  local components = {}
+  local onLoads = {}
   local inputs = {} -- used as cache
   -- shallow copy so leave reteNode.data untouched
   local data = {}
@@ -148,10 +134,10 @@ parse = function(reteRoot, key)
 
       if string.sub(name, 1, 6) == "child." then
         table.insert(children, value)
-      elseif string.sub(name, 1, 10) == "component." then
-        table.insert(components, value)
       elseif string.sub(name, 1, 7) == "action." then
         table.insert(actions, value)
+      elseif string.sub(name, 1, 7) == "onLoad." then
+        table.insert(onLoads, value)
       else
         data[name] = value
       end
@@ -175,18 +161,8 @@ parse = function(reteRoot, key)
     node:runAction(action)
   end
 
-  for _, component in ipairs(components) do
-    node:addComponent(component)
-  end
-
-  if type.policies then
-    for _, policy in ipairs(type.policies) do
-      if policy == customAsProperties and data["$customInputs"] then
-        for k, _ in pairs(data["$customInputs"]) do
-          node[k] = data[k]
-        end
-      end
-    end
+  for _, onLoad in ipairs(onLoads) do
+    onLoad(node)
   end
 
   -- cache inputs and output

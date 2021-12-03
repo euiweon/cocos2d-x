@@ -14,6 +14,13 @@ Rete.Component.prototype.addProperty = function(param) {
 }
 
 Rete.Component.prototype.addNodeInputs = function() {
+    // onLoad require a Lua function return a function which takes a Node as the first argument.
+    this._node.data.$onLoadCount = this._node.data.$onLoadCount || 0;
+    for (var i = 0; i <= this._node.data.$onLoadCount; i++) {
+        this._node.addInput(new Rete.Input(`onLoad.${i}`, `onLoad(${i})`, editor.socket("LuaFunction")));
+    }
+    this._node.data.$onLoadCount = 0; // will be restored when onLoad connect
+
     // actions
     this._node.data.$actionCount = this._node.data.$actionCount || 0;
     for (var i = 0; i <= this._node.data.$actionCount; i++) {
@@ -21,13 +28,6 @@ Rete.Component.prototype.addNodeInputs = function() {
     }
     this._node.data.$actionCount = 0; // will be restored when action connect
     
-    // components
-    this._node.data.$componentCount = this._node.data.$componentCount || 0;
-    for (var i = 0; i <= this._node.data.$componentCount; i++) {
-        this._node.addInput(new Rete.Input(`component.${i}`, `Component(${i})`, editor.socket("cc.Component")));
-    }
-    this._node.data.$componentCount = 0; // will be restored when component connect
-
     // nodes
     this._node.data.$childrenCount = this._node.data.$childrenCount || 0;
     for (var i = 0; i <= this._node.data.$childrenCount; i++) {

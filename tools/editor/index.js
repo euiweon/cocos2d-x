@@ -71,9 +71,9 @@
             node.data.$childrenCount--;
         }
 
-        if (e.input.socket.name == "cc.Component" && e.input.key.startsWith("component.")) {
+        if (e.input.socket.name == "LuaFunction" && e.input.key.startsWith("onLoad.")) {
             var node = e.input.node;
-            node.data.$componentCount--;
+            node.data.$onLoadCount--;
         }
 
         if (e.input.socket.name == "cc.Action" && e.input.key.startsWith("action.")) {
@@ -94,14 +94,14 @@
             }
         }
 
-        if (e.input.socket.name == "cc.Component" && e.input.key.startsWith("component.")) {
+        if (e.input.socket.name == "LuaFunction" && e.input.key.startsWith("onLoad.")) {
             var node = e.input.node;
-            node.data.$componentCount++;
+            node.data.$onLoadCount++;
 
-            // append a new Component socket when there is no free Component socket left (in order to add more component)
-            var key = "component." + node.data.$componentCount;
+            // append a new onLoad socket when there is no free onLoad socket left (in order to add more onLoad)
+            var key = "onLoad." + node.data.$onLoadCount;
             if (!node.inputs.has(key)) {
-                e.input.node.addInput(new Rete.Input(key, `Component(${node.data.$componentCount})`, window.editor.socket("cc.Component")));
+                e.input.node.addInput(new Rete.Input(key, `onLoad(${node.data.$onLoadCount})`, window.editor.socket("LuaFunction")));
             }
         }
 
