@@ -1763,5 +1763,12 @@ end
 cc.ShaderCache = DeprecatedClass.ShaderCache()
 --ShaderCache  class will be Deprecated,end
 
+--ComponentLua class will be Deprecated,begin
+function DeprecatedClass.ComponentLua()
+    deprecatedTip("ComponentLua","cc.Node.registerScriptHandler")
+    return cc.ComponentLua
+end
+_G["ComponentLua"] = DeprecatedClass.ComponentLua()
+--ComponentLua class will be Deprecated,end
 
 

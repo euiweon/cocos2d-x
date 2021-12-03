@@ -148,10 +148,10 @@ bool ComponentLua::getLuaFunction(const std::string& functionName)
     lua_remove(l, -2);                               // stack: table_of_this["update"]
     
     int type = lua_type(l, -1);
-//    if (type != LUA_TFUNCTION)
-//    {
-//        CCLOG("can not get %s function from %s", functionName.c_str(), _scriptFileName.c_str());
-//    }
+    if (type != LUA_TFUNCTION)
+    {
+        lua_pop(l, 1);
+    }
     
     return type == LUA_TFUNCTION;
 }
@@ -190,6 +190,7 @@ bool ComponentLua::loadAndExecuteScript()
     if (type != LUA_TTABLE)
     {
         CCLOG("%s should return a table, or the script component can not work currectly", _scriptFileName.c_str());
+        lua_pop(l, 1);
         return false;
     }
     
@@ -232,6 +233,15 @@ void ComponentLua::storeLuaTable()
     lua_rawset(l, -3);                         // stack: table_return_from_lua table_of_component
     lua_pop(l, 1);                             // stack: table_return_from_lua
     
+    
+    // DEPRECATED ComponentLua in favour of cc.Node.registerScriptHandler
+    // It tries to copy functions in table_return_from_lua to the metatable of userdata,
+    // This metatable is exactly same as luaL_getmetatable(l, "cc.Component"),
+    // which is shared by all ComponentLua's userdata. 
+    // It causes the problem functions with duplicated names from different ComponentLua's Lua table will overwrite each other.
+    // The only reason I didn't comment it is that it HAPPENED to work in lua-test, 
+    // just becuase lua-test doesn't use duplicated names in different components.
+
     // add table's elements to userdata's metatable
     object_to_luaval<cocos2d::ComponentLua>(l, "cc.ComponentLua", this);  // stack: table_return_from_lua userdata
     lua_getmetatable(l, -1);                   // stack: table_return_from_lua userdata mt
