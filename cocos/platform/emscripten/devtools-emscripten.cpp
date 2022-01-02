@@ -35,14 +35,15 @@ void DevToolsImpl::select(const Node* node)
 {
     string desc = node->getDescription();
 
-    string info = StringUtils::format("Pos = %.2f,%.2f, AP = %.2f,%.2f, Size = %.2f,%.2f, Scale = %.2f,%.2f, Rot = %.2f, Skew = %.2f,%.2f, Color = %d,%d,%d,%d, ", 
+    string info = StringUtils::format("Pos = %.2f,%.2f, AP = %.2f,%.2f, Size = %.2f,%.2f, Scale = %.2f,%.2f, Rot = %.2f, Skew = %.2f,%.2f, Color = %d,%d,%d,%d, ZOrder = %d, ", 
         node->getPositionX(), node->getPositionY(),
         node->getAnchorPoint().x, node->getAnchorPoint().y,
         node->getContentSize().width, node->getContentSize().height,
         node->getScaleX(), node->getScaleY(),
         node->getRotation(),
         node->getSkewX(), node->getSkewY(),
-        node->getColor().r,node->getColor().g,node->getColor().b,node->getOpacity()
+        node->getColor().r,node->getColor().g,node->getColor().b,node->getOpacity(),
+        node->getLocalZOrder()
         );
     size_t separator = desc.find('|');
     if (separator != string::npos)
