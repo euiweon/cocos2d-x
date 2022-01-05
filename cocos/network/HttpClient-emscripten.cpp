@@ -285,7 +285,7 @@ namespace network
 
         attr.onsuccess = onRequestComplete;
         attr.onerror = onRequestComplete;
-        attr.timeoutMSecs = HttpClient::getInstance()->getTimeoutForConnect() + HttpClient::getInstance()->getTimeoutForRead();
+        attr.timeoutMSecs = (HttpClient::getInstance()->getTimeoutForConnect() + HttpClient::getInstance()->getTimeoutForRead()) * 1000;
         emscripten_fetch_t *fetch = emscripten_fetch(&attr, response->getHttpRequest()->getUrl());
         fetch->userData = userData;
     }
