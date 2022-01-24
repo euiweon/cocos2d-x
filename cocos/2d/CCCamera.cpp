@@ -28,6 +28,7 @@
 #include "2d/CCCamera.h"
 #include "2d/CCCameraBackgroundBrush.h"
 #include "base/CCDirector.h"
+#include "base/ccUTF8.h"
 #include "platform/CCGLView.h"
 #include "2d/CCScene.h"
 #include "renderer/CCRenderer.h"
@@ -531,6 +532,11 @@ void Camera::setBackgroundBrush(CameraBackgroundBrush* clearBrush)
 bool Camera::isBrushValid()
 {
     return _clearBrush != nullptr && _clearBrush->isValid();
+}
+
+std::string Camera::getDescription() const
+{
+    return StringUtils::format("<Camera | Tag = %d", _tag);
 }
 
 NS_CC_END

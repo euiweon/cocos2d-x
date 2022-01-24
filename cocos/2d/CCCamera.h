@@ -284,6 +284,8 @@ public:
 
     bool isBrushValid();
 
+    virtual std::string getDescription() const override;
+
 CC_CONSTRUCTOR_ACCESS:
     Camera();
     ~Camera();
