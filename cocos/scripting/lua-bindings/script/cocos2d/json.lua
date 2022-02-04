@@ -163,6 +163,7 @@ end
 -- @return table, int The scanned array as a table, and the position of the next character to scan.
 function decode_scanArray(s,startPos)
   local array = {}	-- The return value
+  local pos = 1
   local stringLen = string.len(s)
   base.assert(string.sub(s,startPos,startPos)=='[','decode_scanArray called but array does not start at position ' .. startPos .. ' in string:\n'..s )
   startPos = startPos + 1
@@ -179,7 +180,8 @@ function decode_scanArray(s,startPos)
     end
     base.assert(startPos<=stringLen, 'JSON String ended unexpectedly scanning array.')
     object, startPos = decode(s,startPos)
-    table.insert(array,object)
+    table.insert(array, pos, object) -- Use pos in case object is nil from json null
+    pos = pos + 1
   until false
 end
 
