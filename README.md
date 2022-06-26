@@ -1,4 +1,21 @@
-In order to build cocos2d-x cpp & lua project into HTML5/wasm, make sure you have installed emsdk(https://emscripten.org/docs/getting_started/downloads.html) and cmake.
+Check out some examples: https://wujiayish.github.io/cocos2d-x-examples/
+
+In order to build cocos2d-x cpp & lua project into HTML5/wasm, make sure you have installed emsdk(https://emscripten.org/docs/getting_started/downloads.html)
+
+    # Get the emsdk repo
+    git clone https://github.com/emscripten-core/emsdk.git
+
+    # Enter that directory
+    cd emsdk
+
+    # Download and install the SDK tools, 2.0.34 is recommended.
+    ./emsdk install 2.0.34
+
+    # Make the SDK "active" for the current user. (writes .emscripten file)
+    ./emsdk activate latest
+
+    # Activate PATH and other environment variables in the current terminal
+    source ./emsdk_env.sh
 
 On Linux and Mac:
 
@@ -16,7 +33,7 @@ On Linux and Mac:
     cd MyGame
     cocos compile -p emscripten -m release
 
-On Window, install ninja(https://github.com/ninja-build/ninja) and make sure it can be found from command line:
+On Window, install cmake and ninja(https://github.com/ninja-build/ninja) and make sure they can be found from command line:
 
     # Install cocos2d-x with python2.7
     git clone https://github.com/WuJiayiSH/cocos2d-x.git
