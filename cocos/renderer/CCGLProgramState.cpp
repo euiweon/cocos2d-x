@@ -73,6 +73,9 @@ UniformValue::UniformValue(const UniformValue& o)
 
 UniformValue::~UniformValue()
 {
+    if (_type == Type::POINTER)
+        free((void*)_value.floatv.pointer);
+
     if (_type == Type::CALLBACK_FN)
         delete _value.callback;
 
@@ -213,9 +216,7 @@ void UniformValue::setFloat(float value)
 void UniformValue::setFloatv(ssize_t size, const float* pointer)
 {
     CCASSERT(_uniform->type == GL_FLOAT, "Wrong type: expecting GL_FLOAT");
-    _value.floatv.pointer = (const float*)pointer;
-    _value.floatv.size = (GLsizei)size;
-    _type = Type::POINTER;
+    setDatav((const void*)pointer, size, sizeof(float));
 }
 
 void UniformValue::setVec2(const Vec2& value)
@@ -228,9 +229,7 @@ void UniformValue::setVec2(const Vec2& value)
 void UniformValue::setVec2v(ssize_t size, const Vec2* pointer)
 {
     CCASSERT(_uniform->type == GL_FLOAT_VEC2, "Wrong type: expecting GL_FLOAT_VEC2");
-    _value.v2f.pointer = (const float*)pointer;
-    _value.v2f.size = (GLsizei)size;
-    _type = Type::POINTER;
+    setDatav((const void*)pointer, size, sizeof(Vec2));
 }
 
 void UniformValue::setVec3(const Vec3& value)
@@ -244,9 +243,7 @@ void UniformValue::setVec3(const Vec3& value)
 void UniformValue::setVec3v(ssize_t size, const Vec3* pointer)
 {
     CCASSERT(_uniform->type == GL_FLOAT_VEC3, "Wrong type: expecting GL_FLOAT_VEC3");
-    _value.v3f.pointer = (const float*)pointer;
-    _value.v3f.size = (GLsizei)size;
-    _type = Type::POINTER;
+    setDatav((const void*)pointer, size, sizeof(Vec3));
 }
 
 void UniformValue::setVec4(const Vec4& value)
@@ -259,9 +256,7 @@ void UniformValue::setVec4(const Vec4& value)
 void UniformValue::setVec4v(ssize_t size, const Vec4* pointer)
 {
     CCASSERT (_uniform->type == GL_FLOAT_VEC4, "Wrong type: expecting GL_FLOAT_VEC4");
-    _value.v4f.pointer = (const float*)pointer;
-    _value.v4f.size = (GLsizei)size;
-    _type = Type::POINTER;
+    setDatav((const void*)pointer, size, sizeof(Vec4));
 }
 
 void UniformValue::setMat4(const Mat4& value)
@@ -269,6 +264,19 @@ void UniformValue::setMat4(const Mat4& value)
     CCASSERT(_uniform->type == GL_FLOAT_MAT4, "_uniform's type should be equal GL_FLOAT_MAT4.");
 	memcpy(_value.matrixValue, &value, sizeof(_value.matrixValue));
     _type = Type::VALUE;
+}
+
+void UniformValue::setDatav(const void* pointer, size_t n, size_t sizeOfType)
+{
+    if (n > _value.floatv.size || _value.floatv.size == 0)
+    {
+        free((void*)_value.floatv.pointer);
+        _value.floatv.pointer = (const float*)malloc(sizeOfType * n + 1); // avoid malloc(0)
+    }
+
+    memcpy((void*)_value.floatv.pointer, pointer, sizeOfType * n);
+    _value.floatv.size = n;
+	_type = Type::POINTER;
 }
 
 UniformValue& UniformValue::operator=(const UniformValue& o)

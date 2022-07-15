@@ -180,6 +180,7 @@ protected:
     /**
      @}
      */
+    void setDatav(const void* pointer, size_t n, size_t sizeOfType);
 };
 
 /**
