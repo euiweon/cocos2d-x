@@ -12,7 +12,7 @@ In order to build cocos2d-x cpp & lua project into HTML5/wasm, make sure you hav
     ./emsdk install 2.0.34
 
     # Make the SDK "active" for the current user. (writes .emscripten file)
-    ./emsdk activate latest
+    ./emsdk activate 2.0.34
 
     # Activate PATH and other environment variables in the current terminal
     source ./emsdk_env.sh
