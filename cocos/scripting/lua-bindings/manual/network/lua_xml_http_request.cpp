@@ -252,7 +252,7 @@ void LuaMinXmlHttpRequest::_sendRequest()
 {
     _httpRequest->setResponseCallback([this](cocos2d::network::HttpClient* sender, cocos2d::network::HttpResponse* response){
         if (_isAborted)
-            return ;
+            return release();
         
         if (0 != strlen(response->getHttpRequest()->getTag()))
         {
