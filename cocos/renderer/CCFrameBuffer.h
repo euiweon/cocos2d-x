@@ -167,9 +167,9 @@ public:
     int8_t getClearStencil() const { return _clearStencil; }
     
     RenderTargetBase* getRenderTarget() const { return _rt; }
-    RenderTargetDepthStencil* getDepthStencilTarget() const { return _rtDepthStencil; }
+    RenderTargetBase* getDepthStencilTarget() const { return _rtDepthStencil; }
     void attachRenderTarget(RenderTargetBase* rt);
-    void attachDepthStencilTarget(RenderTargetDepthStencil* rt);
+    void attachDepthStencilTarget(RenderTargetBase* rt);
     
     bool isDefaultFBO() const { return _isDefault; }
     unsigned int getWidth() const { return _width; }
@@ -194,7 +194,7 @@ private:
     int _width;
     int _height;
     RenderTargetBase* _rt;
-    RenderTargetDepthStencil* _rtDepthStencil;
+    RenderTargetBase* _rtDepthStencil;
     bool _isDefault;
 public:
     static FrameBuffer* getOrCreateDefaultFBO(GLView* glView);

@@ -121,6 +121,12 @@ public:
         ATC_EXPLICIT_ALPHA,
         //! ATITC-compressed texture: ATC_INTERPOLATED_ALPHA
         ATC_INTERPOLATED_ALPHA,
+
+        // A packed 32-bit combined depth and stencil pixel format with two nomorlized unsigned integer
+        // components: 24 bits, typically used for a depth render target, and 8 bits, typically used for
+        // a stencil render target.
+        D24S8,
+        
         //! Default texture format: AUTO
         DEFAULT = AUTO,
         

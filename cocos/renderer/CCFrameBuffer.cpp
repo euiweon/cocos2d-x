@@ -99,6 +99,12 @@ bool RenderTarget::init(unsigned int width, unsigned int height, Texture2D::Pixe
     memset(data, 0, dataLen);
     if(_texture->initWithData(data, dataLen, format, width, height, Size(width, height)))
     {
+        // Linear filtering does not apply to depth texture, at least on WebGL, and it does not have to.
+        if (format == Texture2D::PixelFormat::D24S8)
+        {
+            _texture->setAliasTexParameters();
+        }
+        
         _texture->autorelease();
         CC_SAFE_RETAIN(_texture);
         free(data);
@@ -421,7 +427,16 @@ void FrameBuffer::clearFBO()
     glClearColor(_clearColor.r, _clearColor.g, _clearColor.b, _clearColor.a);
     glClearDepth(_clearDepth);
     glClearStencil(_clearStencil);
+
+    // Enable depth mask to clear depth buffer
+    GLboolean oldDepthWrite = GL_FALSE;
+    glGetBooleanv(GL_DEPTH_WRITEMASK, &oldDepthWrite);
+    glDepthMask(GL_TRUE);
+
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT|GL_STENCIL_BUFFER_BIT);
+
+    glDepthMask(oldDepthWrite);
+
     restoreFBO();
 }
 
@@ -459,9 +474,10 @@ void FrameBuffer::applyFBO()
         else
             glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _rt->getBuffer());
         CHECK_GL_ERROR_DEBUG();
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, nullptr == _rtDepthStencil ? 0 : _rtDepthStencil->getBuffer());
-        CHECK_GL_ERROR_DEBUG();
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, nullptr == _rtDepthStencil ? 0 : _rtDepthStencil->getBuffer());
+        if(_rtDepthStencil && RenderTargetBase::Type::Texture2D == _rtDepthStencil->getType())
+            glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_TEXTURE_2D, _rtDepthStencil->getTexture()->getName(), 0);
+        else
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, nullptr == _rtDepthStencil ? 0 : _rtDepthStencil->getBuffer());
         CHECK_GL_ERROR_DEBUG();
         CCLOG("FBO is %d _fbo %d color, %d ds", _fbo, RenderTargetBase::Type::Texture2D == _rt->getType() ? _rt->getTexture()->getName() : _rt->getBuffer(), nullptr == _rtDepthStencil ? 0 : _rtDepthStencil->getBuffer());
         _fboBindingDirty = false;
@@ -478,7 +494,7 @@ void FrameBuffer::restoreFBO()
     glBindFramebuffer(GL_FRAMEBUFFER, _previousFBO);
 }
 
-void FrameBuffer::attachDepthStencilTarget(RenderTargetDepthStencil* rt)
+void FrameBuffer::attachDepthStencilTarget(RenderTargetBase* rt)
 {
     if(isDefaultFBO())
     {
