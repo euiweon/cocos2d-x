@@ -19,9 +19,9 @@ protected:
     void visit(cocos2d::Renderer *renderer, const cocos2d::Mat4& parentTransform, uint32_t parentFlags) override;
 
 private:
-    cocos2d::RenderTexture* renderTexX;
-    cocos2d::RenderTexture* renderTexY;
-    cocos2d::Sprite* base;
+    cocos2d::RefPtr<cocos2d::RenderTexture> renderTexX;
+    cocos2d::RefPtr<cocos2d::RenderTexture> renderTexY;
+    cocos2d::RefPtr<cocos2d::Sprite> base;
     unsigned int sampleCount;
 };
 

@@ -90,18 +90,12 @@ void BloomScene::update(float delta)
 }
 
 Composer::Composer()
-	: renderTexX(nullptr)
-	, renderTexY(nullptr)
-	, base(nullptr)
-	, sampleCount(5)
+	: sampleCount(5)
 {
 }
 
 Composer::~Composer()
 {
-    CC_SAFE_RELEASE_NULL(base);
-    CC_SAFE_RELEASE_NULL(renderTexX);
-    CC_SAFE_RELEASE_NULL(renderTexY);
 }
 
 bool Composer::initWithTexture(Texture2D* texture)
@@ -118,15 +112,11 @@ bool Composer::initWithTexture(Texture2D* texture)
     auto stateBase = GLProgramState::create(shaderBase);
 	stateBase->setUniformFloat("threshold", 0.5);
     base->setGLProgramState(stateBase);
-    base->retain();
-
+    
     // offscreen ping-pong RT for Gaussian blur
     renderTexX = RenderTexture::create(visibleSize.width, visibleSize.height, Texture2D::PixelFormat::RGBA8888);
     renderTexY = RenderTexture::create(visibleSize.width, visibleSize.height, Texture2D::PixelFormat::RGBA8888);
 
-    renderTexX->retain();
-    renderTexY->retain();
-    
     renderTexX->setPosition(Vec2(visibleSize / 2));
     renderTexY->setPosition(Vec2(visibleSize / 2));
 
