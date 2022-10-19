@@ -1118,6 +1118,7 @@ public:
      * If the Node enters the 'stage' with a transition, this event is called when the transition starts.
      * During onEnter you can't access a "sister/brother" node.
      * If you override onEnter, you shall call its parent's one, e.g., Node::onEnter().
+     * Also avoid any modification to your ancestor nodes' container in overridden function as your ancestor nodes may be iterating through their children and calling onEnter on them recursively.
      * @lua NA
      */
     virtual void onEnter();
@@ -1125,6 +1126,7 @@ public:
     /** Event callback that is invoked when the Node enters in the 'stage'.
      * If the Node enters the 'stage' with a transition, this event is called when the transition finishes.
      * If you override onEnterTransitionDidFinish, you shall call its parent's one, e.g. Node::onEnterTransitionDidFinish()
+     * Also avoid any modification to your ancestor nodes' container in overridden function as your ancestor nodes may be iterating through their children and calling onEnterTransitionDidFinish on them recursively.
      * @lua NA
      */
     virtual void onEnterTransitionDidFinish();
@@ -1134,6 +1136,7 @@ public:
      * If the Node leaves the 'stage' with a transition, this event is called when the transition finishes.
      * During onExit you can't access a sibling node.
      * If you override onExit, you shall call its parent's one, e.g., Node::onExit().
+     * Also avoid any modification to your ancestor nodes' container in overridden function as your ancestor nodes may be iterating through their children and calling onExit on them recursively.
      * @lua NA
      */
     virtual void onExit();
