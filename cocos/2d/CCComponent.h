@@ -68,7 +68,22 @@ public:
     virtual void update(float delta);
     virtual bool serialize(void* r);
 
+    /**
+     * Event callback that is invoked every time when owner enters the 'stage'.
+     * During onEnter you can't access owner's sibling nodes.
+     * If you override onEnter, you shall also call onEnter of your base class, e.g., Component::onEnter().
+     * Also avoid any modification to the container of owner's ancestor nodes in overridden function as they may be iterating through their children and calling onEnter on them and their components recursively.
+     * @lua NA
+     */
     virtual void onEnter();
+
+    /**
+     * Event callback that is invoked every time when owner leaves the 'stage'.
+     * During onExit you can't access owner's sibling nodes.
+     * If you override onExit, you shall also call onExit of your base class, e.g., Component::onExit().
+     * Also avoid any modification to the container of owner's ancestor nodes in overridden function as they may be iterating through their children and calling onExit on them and their components recursively.
+     * @lua NA
+     */
     virtual void onExit();
     virtual void onAdd();
     virtual void onRemove();
