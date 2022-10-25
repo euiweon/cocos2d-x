@@ -285,6 +285,42 @@ private: varType varName; public: virtual inline varType get##funName() const { 
  */
 #define CC_DEPRECATED(...) CC_DEPRECATED_ATTRIBUTE
 
+/** @def CC_ALWAYS_INLINE
+ */
+#if defined(__has_attribute)
+    #if __has_attribute(always_inline)
+    #define CC_ALWAYS_INLINE __attribute__((always_inline))
+    #endif
+#endif
+
+#if !defined(CC_ALWAYS_INLINE)
+    #ifdef _MSC_VER
+    #define CC_ALWAYS_INLINE __forceinline
+    #endif
+#endif
+
+#if !defined(CC_ALWAYS_INLINE)
+    #define CC_ALWAYS_INLINE
+#endif
+
+/** @def CC_NOINLINE
+ */
+#if defined(__has_attribute)
+    #if __has_attribute(noinline)
+    #define CC_NOINLINE __attribute__((noinline))
+    #endif
+#endif
+
+#if !defined(CC_NOINLINE)
+    #ifdef _MSC_VER
+    #define CC_NOINLINE __declspec(noinline)
+    #endif
+#endif
+
+#if !defined(CC_NOINLINE)
+    #define CC_NOINLINE
+#endif
+
 /** @def CC_FORMAT_PRINTF(formatPos, argPos)
  * Only certain compiler support __attribute__((format))
  *
