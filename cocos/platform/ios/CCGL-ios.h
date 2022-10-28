@@ -37,7 +37,11 @@ THE SOFTWARE.
 #define glMapBuffer                 glMapBufferOES
 #define glUnmapBuffer               glUnmapBufferOES
 
-#define GL_DEPTH24_STENCIL8         GL_DEPTH24_STENCIL8_OES
+// Assume it support EXT_packed_depth_stencil or OES_packed_depth_stencil
+#define GL_DEPTH_STENCIL            0x84F9
+#define GL_UNSIGNED_INT_24_8        0x84FA
+#define GL_DEPTH24_STENCIL8         0x88F0
+
 #define GL_WRITE_ONLY               GL_WRITE_ONLY_OES
 
 #include <OpenGLES/ES2/gl.h>
