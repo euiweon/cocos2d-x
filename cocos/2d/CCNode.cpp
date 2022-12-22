@@ -46,10 +46,6 @@ THE SOFTWARE.
 #include "renderer/CCMaterial.h"
 #include "math/TransformUtils.h"
 
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN)
-#include "platform/emscripten/devtools-emscripten.h"
-#endif
-
 #if CC_NODE_RENDER_SUBPIXEL
 #define RENDER_IN_SUBPIXEL
 #else
@@ -702,10 +698,6 @@ void Node::setName(const std::string& name)
     _name = name;
     std::hash<std::string> h;
     _hashOfName = h(name);
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN) && (COCOS2D_DEBUG >= 1)
-    DevToolsImpl::getInstance()->nodeNameChanged(this);
-#endif
 }
 
 /// userData setter
@@ -1320,11 +1312,7 @@ void Node::onEnter()
     {
         ++__attachedNodeCount;
     }
-    
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN) && (COCOS2D_DEBUG >= 1)
-    DevToolsImpl::getInstance()->nodeEntered(this);
-#endif
-    
+
 #if CC_ENABLE_SCRIPT_BINDING
     if (_scriptType == kScriptTypeJavascript)
     {
@@ -1413,10 +1401,6 @@ void Node::onExit()
     {
         --__attachedNodeCount;
     }
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_EMSCRIPTEN) && (COCOS2D_DEBUG >= 1)
-    DevToolsImpl::getInstance()->nodeExited(this);
-#endif
 
 #if CC_ENABLE_SCRIPT_BINDING
     if (_scriptType == kScriptTypeJavascript)

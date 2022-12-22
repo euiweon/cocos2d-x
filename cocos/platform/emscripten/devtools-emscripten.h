@@ -22,14 +22,6 @@ public:
 
     void resume();
 
-    void select(const Node* node);
-
-    void nodeEntered(const Node* node);
-
-    void nodeExited(const Node* node);
-
-    void nodeNameChanged(const Node* node);
-
     static DevToolsImpl* getInstance();
 
 private:
