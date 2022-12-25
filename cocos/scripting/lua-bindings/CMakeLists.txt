@@ -7,6 +7,7 @@ set(lua_bindings_manual_headers
     manual/cocosbuilder/lua_cocos2dx_cocosbuilder_manual.h
     manual/CCLuaStack.h
     manual/CCLuaEngine.h
+    manual/CCLuaBind.h
     manual/lua_module_register.h
     manual/CCLuaBridge.h
     manual/extension/lua_cocos2dx_extension_manual.h
@@ -41,6 +42,7 @@ set(lua_bindings_manual_files
     manual/CCLuaBridge.cpp
     manual/CCLuaEngine.cpp
     manual/CCLuaStack.cpp
+    manual/CCLuaBind.cpp
     manual/CCLuaValue.cpp
     manual/Cocos2dxLuaLoader.cpp
     manual/LuaBasicConversions.cpp
