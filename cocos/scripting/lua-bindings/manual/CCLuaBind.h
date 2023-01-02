@@ -26,6 +26,7 @@
 #define CCBIND_SGETTER(field) cocos2d::bind::internal::StaticGetter<decltype(&field), &field>::invoke
 #define CCBIND_SSETTER(field) cocos2d::bind::internal::StaticSetter<decltype(&field), &field>::invoke
 #define CCBIND_CONSTANT(v) (static_cast<lua_Number>(v))
+#define CCBIND_CONSTRUCTOR(T) cocos2d::bind::internal::Constructor<T>::invoke
 
 #define CCBIND_DEFINE_TABLE_TYPE(T, luatable_to_val, val_to_luatable)   \
 template <>                                                             \
@@ -291,6 +292,8 @@ namespace bind
             } \
         };
 
+        __INTERNAL_DEFINE_NUMBER_TYPE(uint8_t);
+        __INTERNAL_DEFINE_NUMBER_TYPE(int8_t);
         __INTERNAL_DEFINE_NUMBER_TYPE(uint16_t);
         __INTERNAL_DEFINE_NUMBER_TYPE(int16_t);
         __INTERNAL_DEFINE_NUMBER_TYPE(int32_t);
@@ -947,6 +950,27 @@ namespace bind
 #else
                 return ::cocos2d::bind::getError() == CCBIND_OK ? 1 : 0;
 #endif
+            }
+        };
+
+        template<typename T, typename = void> struct Constructor;
+        template<typename T>
+        struct Constructor<T, typename std::enable_if<std::is_base_of<cocos2d::Ref, T>::value>::type>
+        {
+            static int invoke(lua_State* L)
+            {
+                int argc = lua_gettop(L) - 1;
+                if (argc == 0)
+                {
+                    T* cobj = new T();
+                    cobj->autorelease();
+                    Converter<T>::to(L, cobj);
+                    return 1;
+                }
+#if COCOS2D_DEBUG >= 1
+                luaL_error(L, "Calling constructor with wrong number of arguments: %d, was expecting %d\n ", argc, 1);
+#endif
+                return 0;
             }
         };
     }

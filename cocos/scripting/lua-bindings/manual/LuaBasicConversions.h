@@ -1214,6 +1214,19 @@ const char* getLuaTypeName(T* ret,const char* type)
     return nullptr;
 }
 
+template <class T>
+const char* getLuaTypeName()
+{
+    std::string hashName = typeid(T).name();
+    auto iter =  g_luaType.find(hashName);
+    if(g_luaType.end() != iter)
+    {
+        return iter->second.c_str();
+    }
+
+    return nullptr;
+}
+
 /**
  * Push the native object by userdata format into the Lua stack by typename.
  *
