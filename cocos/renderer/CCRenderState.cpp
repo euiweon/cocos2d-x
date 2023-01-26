@@ -123,15 +123,18 @@ void RenderState::bind(Pass* pass)
     // Restore renderer state to its default, except for explicitly specified states
     StateBlock::restore(stateOverrideBits);
 
-    // Apply renderer state for the entire hierarchy, top-down.
-    rs = nullptr;
-    while ((rs = getTopmost(rs)))
+    // Apply renderer state for the entire hierarchy.
+    rs = this;
+    while (rs)
     {
         if (rs->_state)
         {
-            rs->_state->bindNoRestore();
+            rs->_state->bindNoRestore(stateOverrideBits);
         }
+        rs = rs->_parent;
     }
+
+    CC_ASSERT(stateOverrideBits == 0);
 }
 
 RenderState* RenderState::getTopmost(RenderState* below)
@@ -234,10 +237,17 @@ void RenderState::StateBlock::bind()
 
 void RenderState::StateBlock::bindNoRestore()
 {
+    long bits = RS_ALL_ONES;
+    bindNoRestore(bits);
+}
+
+void RenderState::StateBlock::bindNoRestore(long& bits)
+{
     CC_ASSERT(_defaultState);
 
     // Update any state that differs from _defaultState and flip _defaultState bits
-    if ((_bits & RS_BLEND) && (_blendEnabled != _defaultState->_blendEnabled))
+    long mask = _bits & bits;
+    if ((mask & RS_BLEND) && (_blendEnabled != _defaultState->_blendEnabled))
     {
         if (_blendEnabled)
             glEnable(GL_BLEND);
@@ -245,13 +255,13 @@ void RenderState::StateBlock::bindNoRestore()
             glDisable(GL_BLEND);
         _defaultState->_blendEnabled = _blendEnabled;
     }
-    if ((_bits & RS_BLEND_FUNC) && (_blendSrc != _defaultState->_blendSrc || _blendDst != _defaultState->_blendDst))
+    if ((mask & RS_BLEND_FUNC) && (_blendSrc != _defaultState->_blendSrc || _blendDst != _defaultState->_blendDst))
     {
         GL::blendFunc((GLenum)_blendSrc, (GLenum)_blendDst);
         _defaultState->_blendSrc = _blendSrc;
         _defaultState->_blendDst = _blendDst;
     }
-    if ((_bits & RS_CULL_FACE) && (_cullFaceEnabled != _defaultState->_cullFaceEnabled))
+    if ((mask & RS_CULL_FACE) && (_cullFaceEnabled != _defaultState->_cullFaceEnabled))
     {
         if (_cullFaceEnabled)
             glEnable(GL_CULL_FACE);
@@ -259,17 +269,17 @@ void RenderState::StateBlock::bindNoRestore()
             glDisable(GL_CULL_FACE);
         _defaultState->_cullFaceEnabled = _cullFaceEnabled;
     }
-    if ((_bits & RS_CULL_FACE_SIDE) && (_cullFaceSide != _defaultState->_cullFaceSide))
+    if ((mask & RS_CULL_FACE_SIDE) && (_cullFaceSide != _defaultState->_cullFaceSide))
     {
         glCullFace((GLenum)_cullFaceSide);
         _defaultState->_cullFaceSide = _cullFaceSide;
     }
-    if ((_bits & RS_FRONT_FACE) && (_frontFace != _defaultState->_frontFace))
+    if ((mask & RS_FRONT_FACE) && (_frontFace != _defaultState->_frontFace))
     {
         glFrontFace((GLenum)_frontFace);
         _defaultState->_frontFace = _frontFace;
     }
-    if ((_bits & RS_DEPTH_TEST) && (_depthTestEnabled != _defaultState->_depthTestEnabled))
+    if ((mask & RS_DEPTH_TEST) && (_depthTestEnabled != _defaultState->_depthTestEnabled))
     {
         if (_depthTestEnabled)
             glEnable(GL_DEPTH_TEST);
@@ -277,12 +287,12 @@ void RenderState::StateBlock::bindNoRestore()
             glDisable(GL_DEPTH_TEST);
         _defaultState->_depthTestEnabled = _depthTestEnabled;
     }
-    if ((_bits & RS_DEPTH_WRITE) && (_depthWriteEnabled != _defaultState->_depthWriteEnabled))
+    if ((mask & RS_DEPTH_WRITE) && (_depthWriteEnabled != _defaultState->_depthWriteEnabled))
     {
         glDepthMask(_depthWriteEnabled ? GL_TRUE : GL_FALSE);
         _defaultState->_depthWriteEnabled = _depthWriteEnabled;
     }
-    if ((_bits & RS_DEPTH_FUNC) && (_depthFunction != _defaultState->_depthFunction))
+    if ((mask & RS_DEPTH_FUNC) && (_depthFunction != _defaultState->_depthFunction))
     {
         glDepthFunc((GLenum)_depthFunction);
         _defaultState->_depthFunction = _depthFunction;
@@ -319,7 +329,8 @@ void RenderState::StateBlock::bindNoRestore()
 //        _defaultState->_stencilOpDppass = _stencilOpDppass;
 //    }
 
-    _defaultState->_bits |= _bits;
+    bits &= ~mask;
+    _defaultState->_bits |= mask;
 }
 
 void RenderState::StateBlock::restore(long stateOverrideBits)
@@ -334,55 +345,48 @@ void RenderState::StateBlock::restore(long stateOverrideBits)
     }
 
     // Restore any state that is not overridden and is not default
-    if (!(stateOverrideBits & RS_BLEND) && (_defaultState->_bits & RS_BLEND))
+    if (!(stateOverrideBits & RS_BLEND) && !_defaultState->_blendEnabled)
     {
         glEnable(GL_BLEND);
-        _defaultState->_bits &= ~RS_BLEND;
         _defaultState->_blendEnabled = true;
     }
-    if (!(stateOverrideBits & RS_BLEND_FUNC) && (_defaultState->_bits & RS_BLEND_FUNC))
+    if (!(stateOverrideBits & RS_BLEND_FUNC) && (_defaultState->_blendSrc != RenderState::BLEND_ONE || _defaultState->_blendDst != RenderState::BLEND_ZERO))
     {
         GL::blendFunc(GL_ONE, GL_ZERO);
-        _defaultState->_bits &= ~RS_BLEND_FUNC;
         _defaultState->_blendSrc = RenderState::BLEND_ONE;
         _defaultState->_blendDst = RenderState::BLEND_ZERO;
     }
-    if (!(stateOverrideBits & RS_CULL_FACE) && (_defaultState->_bits & RS_CULL_FACE))
+    if (!(stateOverrideBits & RS_CULL_FACE) && _defaultState->_cullFaceEnabled)
     {
         glDisable(GL_CULL_FACE);
-        _defaultState->_bits &= ~RS_CULL_FACE;
         _defaultState->_cullFaceEnabled = false;
     }
-    if (!(stateOverrideBits & RS_CULL_FACE_SIDE) && (_defaultState->_bits & RS_CULL_FACE_SIDE))
+    if (!(stateOverrideBits & RS_CULL_FACE_SIDE) && _defaultState->_cullFaceSide != RenderState::CULL_FACE_SIDE_BACK)
     {
         glCullFace((GLenum)GL_BACK);
-        _defaultState->_bits &= ~RS_CULL_FACE_SIDE;
         _defaultState->_cullFaceSide = RenderState::CULL_FACE_SIDE_BACK;
     }
-    if (!(stateOverrideBits & RS_FRONT_FACE) && (_defaultState->_bits & RS_FRONT_FACE))
+    if (!(stateOverrideBits & RS_FRONT_FACE) && _defaultState->_frontFace != RenderState::FRONT_FACE_CCW)
     {
         glFrontFace((GLenum)GL_CCW);
-        _defaultState->_bits &= ~RS_FRONT_FACE;
         _defaultState->_frontFace = RenderState::FRONT_FACE_CCW;
     }
-    if (!(stateOverrideBits & RS_DEPTH_TEST) && (_defaultState->_bits & RS_DEPTH_TEST))
+    if (!(stateOverrideBits & RS_DEPTH_TEST) && !_defaultState->_depthTestEnabled)
     {
         glEnable(GL_DEPTH_TEST);
-        _defaultState->_bits &= ~RS_DEPTH_TEST;
         _defaultState->_depthTestEnabled = true;
     }
-    if (!(stateOverrideBits & RS_DEPTH_WRITE) && (_defaultState->_bits & RS_DEPTH_WRITE))
+    if (!(stateOverrideBits & RS_DEPTH_WRITE) && _defaultState->_depthWriteEnabled)
     {
         glDepthMask(GL_FALSE);
-        _defaultState->_bits &= ~RS_DEPTH_WRITE;
         _defaultState->_depthWriteEnabled = false;
     }
-    if (!(stateOverrideBits & RS_DEPTH_FUNC) && (_defaultState->_bits & RS_DEPTH_FUNC))
+    if (!(stateOverrideBits & RS_DEPTH_FUNC) && _defaultState->_depthFunction != RenderState::DEPTH_LESS)
     {
         glDepthFunc((GLenum)GL_LESS);
-        _defaultState->_bits &= ~RS_DEPTH_FUNC;
         _defaultState->_depthFunction = RenderState::DEPTH_LESS;
     }
+    _defaultState->_bits &= stateOverrideBits;
 //    if (!(stateOverrideBits & RS_STENCIL_TEST) && (_defaultState->_bits & RS_STENCIL_TEST))
 //    {
 //        glDisable(GL_STENCIL_TEST);
@@ -734,14 +738,7 @@ void RenderState::StateBlock::invalidate(long stateBits)
 void RenderState::StateBlock::setBlend(bool enabled)
 {
     _blendEnabled = enabled;
-    if (enabled)
-    {
-        _bits &= ~RS_BLEND;
-    }
-    else
-    {
-        _bits |= RS_BLEND;
-    }
+    _bits |= RS_BLEND;
 }
 
 void RenderState::StateBlock::setBlendFunc(const BlendFunc& blendFunc)
@@ -753,110 +750,49 @@ void RenderState::StateBlock::setBlendFunc(const BlendFunc& blendFunc)
 void RenderState::StateBlock::setBlendSrc(Blend blend)
 {
     _blendSrc = blend;
-    if (_blendSrc == BLEND_ONE && _blendDst == BLEND_ZERO)
-    {
-        // Default blend func
-        _bits &= ~RS_BLEND_FUNC;
-    }
-    else
-    {
-        _bits |= RS_BLEND_FUNC;
-    }
+    _bits |= RS_BLEND_FUNC;
 }
 
 void RenderState::StateBlock::setBlendDst(Blend blend)
 {
     _blendDst = blend;
-    if (_blendSrc == BLEND_ONE && _blendDst == BLEND_ZERO)
-    {
-        // Default blend func
-        _bits &= ~RS_BLEND_FUNC;
-    }
-    else
-    {
-        _bits |= RS_BLEND_FUNC;
-    }
+    _bits |= RS_BLEND_FUNC;
 }
 
 void RenderState::StateBlock::setCullFace(bool enabled)
 {
     _cullFaceEnabled = enabled;
-    if (!enabled)
-    {
-        _bits &= ~RS_CULL_FACE;
-    }
-    else
-    {
-        _bits |= RS_CULL_FACE;
-    }
+    _bits |= RS_CULL_FACE;
 }
 
 void RenderState::StateBlock::setCullFaceSide(CullFaceSide side)
 {
     _cullFaceSide = side;
-    if (_cullFaceSide == CULL_FACE_SIDE_BACK)
-    {
-        // Default cull side
-        _bits &= ~RS_CULL_FACE_SIDE;
-    }
-    else
-    {
-        _bits |= RS_CULL_FACE_SIDE;
-    }
+    _bits |= RS_CULL_FACE_SIDE;
 }
 
 void RenderState::StateBlock::setFrontFace(FrontFace winding)
 {
     _frontFace = winding;
-    if (_frontFace == FRONT_FACE_CCW)
-    {
-        // Default front face
-        _bits &= ~RS_FRONT_FACE;
-    }
-    else
-    {
-        _bits |= RS_FRONT_FACE;
-    }
+    _bits |= RS_FRONT_FACE;
 }
 
 void RenderState::StateBlock::setDepthTest(bool enabled)
 {
     _depthTestEnabled = enabled;
-    if (enabled)
-    {
-        _bits &= ~RS_DEPTH_TEST;
-    }
-    else
-    {
-        _bits |= RS_DEPTH_TEST;
-    }
+    _bits |= RS_DEPTH_TEST;
 }
 
 void RenderState::StateBlock::setDepthWrite(bool enabled)
 {
     _depthWriteEnabled = enabled;
-    if (!enabled)
-    {
-        _bits &= ~RS_DEPTH_WRITE;
-    }
-    else
-    {
-        _bits |= RS_DEPTH_WRITE;
-    }
+    _bits |= RS_DEPTH_WRITE;
 }
 
 void RenderState::StateBlock::setDepthFunction(DepthFunction func)
 {
     _depthFunction = func;
-    if (_depthFunction == DEPTH_LESS)
-    {
-        // Default depth function
-        _bits &= ~RS_DEPTH_FUNC;
-    }
-    else
-    {
-        _bits |= RS_DEPTH_FUNC;
-    }
+    _bits |= RS_DEPTH_FUNC;
 }
 
 //void RenderState::StateBlock::setStencilTest(bool enabled)

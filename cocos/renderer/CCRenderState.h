@@ -410,6 +410,7 @@ public:
     protected:
 
         void bindNoRestore();
+        void bindNoRestore(long&);
         static void enableDepthWrite();
 
         void cloneInto(StateBlock* renderState) const;
