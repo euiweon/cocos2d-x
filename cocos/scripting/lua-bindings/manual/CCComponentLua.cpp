@@ -143,7 +143,8 @@ bool ComponentLua::getLuaFunction(const std::string& functionName)
     lua_pushstring(l, _strIndex.c_str());            // stack: table_of_component strIndex
     lua_rawget(l, -2);                               // stack: table_of_component table_of_this
     lua_pushstring(l, functionName.c_str());         // stack: table_of_component table_of_this "update"
-    lua_rawget(l, -2);                               // stack: table_of_component table_of_this table_of_this["update"]
+    // lua_gettable will trigger a metamethod for the "index" event which allows inheritance of Lua Components
+    lua_gettable(l, -2);                             // stack: table_of_component table_of_this table_of_this["update"]
     lua_remove(l, -2);                               // stack: table_of_component table_of_this["update"]
     lua_remove(l, -2);                               // stack: table_of_this["update"]
     
