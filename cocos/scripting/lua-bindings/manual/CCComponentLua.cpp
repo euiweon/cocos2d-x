@@ -233,26 +233,30 @@ void ComponentLua::storeLuaTable()
     lua_rawset(l, -3);                         // stack: table_return_from_lua table_of_component
     lua_pop(l, 1);                             // stack: table_return_from_lua
     
-    
-    // DEPRECATED ComponentLua in favour of cc.Node.registerScriptHandler
-    // It tries to copy functions in table_return_from_lua to the metatable of userdata,
-    // This metatable is exactly same as luaL_getmetatable(l, "cc.Component"),
-    // which is shared by all ComponentLua's userdata. 
-    // It causes the problem functions with duplicated names from different ComponentLua's Lua table will overwrite each other.
-    // The only reason I didn't comment it is that it HAPPENED to work in lua-test, 
-    // just becuase lua-test doesn't use duplicated names in different components.
-
-    // add table's elements to userdata's metatable
+    // local peer = {}
+    // table_return_from_lua.__index = table_return_from_lua.__index or table_return_from_lua
+    // setmetatable(peer, table_return_from_lua)
+    // tolua.setpeer(userdata, peer)
     object_to_luaval<cocos2d::ComponentLua>(l, "cc.ComponentLua", this);  // stack: table_return_from_lua userdata
-    lua_getmetatable(l, -1);                   // stack: table_return_from_lua userdata mt
-    lua_remove(l, -2);                         // stack: table_return_from_lua mt
-    lua_pushnil(l);                            // stack: table_return_from_lua mt nil
-    while (lua_next(l, -3))                    // stack: table_return_from_lua mt key value
+    lua_newtable(l);                            // stack: table_return_from_lua userdata peer
+    lua_pushvalue(l, -3);                       // stack: table_return_from_lua userdata peer table_return_from_lua
+    lua_pushstring(l, "__index");               // stack: table_return_from_lua userdata peer table_return_from_lua "__index"
+    lua_rawget(l, -2);                          // stack: table_return_from_lua userdata peer table_return_from_lua __index
+
+    if (lua_isnil(l, -1))
     {
-        lua_pushvalue(l, -2);                  // stack: table_return_from_lua mt key value key
-        lua_insert(l, -2);                     // stack: table_return_from_lua mt key key value
-        lua_rawset(l, -4);                     // stack: table_return_from_lua mt key
+        lua_pop(l, 1);                          // stack: table_return_from_lua userdata peer table_return_from_lua
+        lua_pushstring(l, "__index");           // stack: table_return_from_lua userdata peer table_return_from_lua "__index"
+        lua_pushvalue(l, -2);                   // stack: table_return_from_lua userdata peer table_return_from_lua "__index" table_return_from_lua
+        lua_rawset(l, -3);                      // stack: table_return_from_lua userdata peer table_return_from_lua
     }
+    else
+    {
+        lua_pop(l, 1);                          // stack: table_return_from_lua userdata peer table_return_from_lua
+    }
+
+    lua_setmetatable(l, -2);                    // stack: table_return_from_lua userdata peer
+    lua_setfenv(l, -2);                         // stack: table_return_from_lua userdata
     lua_pop(l, 2);
 }
 

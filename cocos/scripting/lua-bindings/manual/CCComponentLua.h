@@ -31,21 +31,13 @@
 
 NS_CC_BEGIN
 
-// We have tried hard to fix issues in this class but it's still problematic:
-// 1. It doesn't recover Lua stack when it fails to find callback functions(onEnter, onExit, and update),
-// which causes memory corruption, we have fixed this one.
-// 2. It tries to copy functions in your Lua table to the metatable of ComponentLua instance's userdata
-// (which is shared by all ComponentLua userdata).
-// So functions with duplicated names from different ComponentLua's Lua tables can weirdly overwrite each other.
-// See: https://forum.cocos.org/t/componentlua-bug/36519 (Chinese)
-
-// We can't fix its all peculiarities. 
-// The thing is that it calls callback functions with the instance of ComponentLua as self, (the userdata of that instance to be exactly)
-// so you can find ComponentLua's functions in self, such as getOwner,
-// but you lose all your functions in your Lua table. you can't reference anything in your Lua table with self from these callback functions.
-// The implementation tried to fix this with the approach in issue 2, which only causes more weird behavior.
-// I would suggest whatever you can do with ComponentLua, you can do it with registerScriptHandler, so I deprecated it in favour of registerScriptHandler.
-class CC_DEPRECATED_ATTRIBUTE ComponentLua : public Component
+// TODO: Eventually, it should be done in the new binding mechanism of 
+// deriving from C++ classes in the script. Pseudo code like:
+// local MyComponent = class("MyComponent", cc.Component)
+// function MyComponent:onEnter()
+//   ...
+// end
+class ComponentLua : public Component
 {
 public:
     static ComponentLua* create(const std::string& scriptFileName);
