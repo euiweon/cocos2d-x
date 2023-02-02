@@ -882,7 +882,8 @@ Rect Sprite3D::getBoundingBox() const
 void Sprite3D::setCullFace(GLenum cullFace)
 {
     for (auto& it : _meshes) {
-        it->getMaterial()->getStateBlock()->setCullFaceSide((RenderState::CullFaceSide)cullFace);
+        if (Material* material = it->getMaterial())
+            material->getStateBlock()->setCullFaceSide((RenderState::CullFaceSide)cullFace);
 //        it->getMeshCommand().setCullFace(cullFace);
     }
 }
@@ -890,7 +891,8 @@ void Sprite3D::setCullFace(GLenum cullFace)
 void Sprite3D::setCullFaceEnabled(bool enable)
 {
     for (auto& it : _meshes) {
-        it->getMaterial()->getStateBlock()->setCullFace(enable);
+        if (Material* material = it->getMaterial())
+            material->getStateBlock()->setCullFace(enable);
 //        it->getMeshCommand().setCullFaceEnabled(enable);
     }
 }

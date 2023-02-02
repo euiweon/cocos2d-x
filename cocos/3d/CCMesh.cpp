@@ -374,7 +374,7 @@ Material* Mesh::getMaterial() const
 
 void Mesh::draw(Renderer* renderer, float globalZOrder, const Mat4& transform, uint32_t flags, unsigned int lightMask, const Vec4& color, bool forceDepthWrite)
 {
-    if (! isVisible())
+    if (! isVisible() || !_material)
         return;
 
     bool isTransparent = (_isTransparent || color.w < 1.f);
